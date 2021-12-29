@@ -13,10 +13,14 @@ type Statement struct {
 }
 
 func ReadStatement(source *SourceFile, scanner *Scanner) (statement *Statement, err error){
-	tntoks := scanner.scanWords()
-  tname := Text(tntoks)
-  stttoks := scanner.scanKeywords()
-  sttype := Text(stttoks)
+  statement = new(Statement)
+  statement.location = scanner.Position()
+	dtoks := scanner.scanWords()
+  dname := NormalizedText(dtoks)
+  statement.target = DatapointReference(dname)
+
+  optoks := scanner.scanKeywords()
+  optext := Text(optoks)
 
   return
 }

@@ -5,6 +5,9 @@ import (
 	"errors"
 	"io"
 	"strings"
+
+	"github.com/chewxy/lingo/lexer"
+	"github.com/chewxy/lingo/pos"
 )
 
 var eof = rune(0)
@@ -36,15 +39,12 @@ type Tokenized struct {
   Keyword bool
 }
 
-func Text(t []*Tokenized) string {
-  r := ""
-  for i := 0; i < len(t); i++ {
-    r += t[i].Literal
-    if (i < len(t)) {
-      r += " "
-    }
-  }
-  return r
+type TokenListener func(a *Annotation)
+type ErrorListener func(e *error)
+
+func ProcessTokens(s io.Reader, l *TokenListener, e *ErrorListener) {
+  lx := lexer.New("dummy", s)
+  pt := pos.New(pos.withModel())
 }
 
 func NewCliffScanner(r io.Reader) *Scanner {
