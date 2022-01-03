@@ -1,10 +1,10 @@
 package cliff;
 
 type Span struct {
-  Start int32
-  Length int32
-  StartLine int32
-  StartColumn int32
-  EndLine int32
-  EndColumn int32
+  Start int
+  Length int
+  StartLine int
+  StartColumn int
+  EndLine int
+  EndColumn int
 }

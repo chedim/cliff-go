@@ -1,39 +1,37 @@
-package cliff
+package cliff;
 
-type DefinitionStruct struct {
-  valueExpression Expression
-  activityExpression Expression
-  dependencies []*Datapoint
+type Definition struct {
+  AnExpression
+  Condition AnExpression
 }
 
-func NewDefinition(parser *Parser) Definition {
-	return DefinitionStruct{}
-}
+func ReadDefinition(scanner *Scanner) (*Definition, *ParserError) {
+  result := &Definition{}
 
-func (me DefinitionStruct) parse(parser *Parser) {
-  valueExpression = NewValueExpression()
-  tok, lit := parser.Scan()
-
-  activityDependencies := me.activityExpression.Dependencies()
-  valueDependencies := me.valueExpression.Dependencies()
-
-  me.dependencies = make([]*Datapoint, len(activityDependencies) + len(valueDependencies))
-  for i := 0; i < len(me.dependencies); i++ {
-    if i < len(activityDependencies) {
-      me.dependencies[i] = activityDependencies[i]
-    } else {
-      me.dependencies[i] = valueDependencies[i - len(activityDependencies)]
-    }
+  tok, e := scanner.Peek();
+  if e != nil {
+    return nil, ExtendParserError(*scanner.Position(), e)
   }
-}
+  if tok.Token != IS && tok.Token != MINUS {
+    return nil, NewParserError(*scanner.Position(), "tried to read definition starting from a token that is not IS or MINUS")
+  }
+  scanner.Scan()
 
-func (me DefinitionStruct) Active() bool {
-	return true
-}
+  tok,e = scanner.Peek()
+  if tok.Token != WHEN {
+    exp, err := ReadExpression(scanner)
+    if err != nil {
+      return nil, err
+    }
+    result.AnExpression = exp
+  } else {
+    scanner.Scan()
+    exp, err := ReadExpression(scanner)
+    if err != nil {
+      return nil, err
+    }
+    result.Condition = exp
+  }
 
-func (me DefinitionStruct) Evaluate() *Value {
-}
-
-func (me DefinitionStruct) Dependencies() []*Datapoint {
-  return 
+  return result, nil
 }

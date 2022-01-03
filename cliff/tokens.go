@@ -1,5 +1,6 @@
 package cliff;
 
+//go:generate stringer -type=Token
 type Token int
 
 const (
@@ -21,14 +22,31 @@ const (
 	PLUS      // +
 	MINUS     // -
   DOT       // .
+  QUOTE     // '
+  DQUOTE    // "
+  LBRA      // [
+  RBRA      // ]
+  LPAREN    // (
+  RPAREN    // )
+  LCURL     // {
+  RCURL     // }
+  SLASH     // /
+  BSLASH    // \
+  OTHER
 
 	// KEYWORDS
+  A
+  AN
   ARE
+  AT
 	IS
 	WHEN
   AND
   OR
   OF
   THEN
+  ND
+  RD
+  TH
 )
 
