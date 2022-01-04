@@ -1,4 +1,4 @@
-package cliff
+package parser
 
 import (
 	"errors"
@@ -14,6 +14,13 @@ func NewParserError(location Span, message string) *ParserError {
 	e := new(ParserError)
 	e.error = errors.New(message)
   e.Location = location
+  return e
+}
+
+func WrapParserError(err *ParserError, message string) *ParserError {
+  e := new(ParserError)
+  e.error = err
+  e.Location = err.Location
   return e
 }
 

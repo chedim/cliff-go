@@ -1,4 +1,4 @@
-package cliff;
+package parser;
 
 //go:generate stringer -type=Token
 type Token int
@@ -45,6 +45,8 @@ const (
   OR
   OF
   THEN
+  TRUE
+  FALSE
   ND
   RD
   TH

@@ -1,4 +1,4 @@
-package cliff
+package parser
 
 import (
 	"fmt"
@@ -37,7 +37,7 @@ func ReadString(scanner *Scanner, delim Token) (*StringLiteral, *ParserError) {
 		if err != nil {
 			return nil, ExtendParserError(*scanner.Position(), err)
 		}
-
+    fmt.Printf("String token: %s %s\n", token.Token.String(), token.Literal)
 		if token.Token == EOF {
 			return nil, NewParserError(result.location, "Infinite string")
 		} else if token.Token == SLASH && !escaped {
@@ -70,6 +70,14 @@ func ReadString(scanner *Scanner, delim Token) (*StringLiteral, *ParserError) {
 		scanner.Scan()
 	}
 
+  tok, err := scanner.Peek()
+  if err != nil {
+    return nil, ExtendParserError(*scanner.Position(), err)
+  }
+  if tok.Token != delim {
+    return nil, NewParserError(*scanner.Position(), fmt.Sprintf("Wrong string end delimeter: %s %s", tok.Token, tok.Literal))
+  }
+  scanner.Scan()
   scanner.PreserveCase(false)
 	return result, nil
 }
@@ -78,7 +86,7 @@ func (s *StringLiteral) Span() *Span {
   return &s.location
 }
 
-func (s *StringLiteral) Value() *AValue {
+func (s *StringLiteral) Value() AValue {
   var result AValue = s.value
-  return &result
+  return result
 }

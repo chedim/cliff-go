@@ -1,4 +1,4 @@
-package cliff;
+package parser;
 
 type SubStatement struct {
   Statement

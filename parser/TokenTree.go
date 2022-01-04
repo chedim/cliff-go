@@ -1,4 +1,4 @@
-package cliff;
+package parser;
 
 type TokenAnalyzer func (f *SourceFile, s *Scanner) interface{}
 

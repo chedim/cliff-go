@@ -1,4 +1,4 @@
-package cliff
+package parser
 
 import (
 	"strings"
@@ -13,7 +13,7 @@ func TestReadStatement(t *testing.T) {
     t.Errorf("failed to read a statement: %s", err)
   }
 
-  target := statement.Target()
+  target := statement.Target().Value().([]string)
   if len(target) != 2 || target[0] != "application" || target[1] != "output" {
     t.Errorf("invalid target: '%s'", strings.Join(target, "."))
   }
@@ -23,16 +23,20 @@ func TestReadStatement(t *testing.T) {
   }
 
   def := statement.definitions[0]
-  var expected AValue = "Hello, world"
-  if *def.Value() != expected {
-    t.Errorf("invalid value in definition: %s", *def.Value())
+  expected := "Hello, world"
+  actual, ok := def.Value().(string)
+  if !ok {
+    t.Errorf("invalid definition type: %T", def.Value())
+  }
+  if actual != expected {
+    t.Errorf("invalid value in definition: %s", actual)
   }
 
-  if def.Condition == nil {
+  if def.Condition() == nil {
     t.Errorf("empty condition")
   }
 
-  cond := *def.Condition.Value()
+  cond := def.Condition().Value()
   if cv, ok := cond.(bool); !cv || !ok {
     if !ok {
       t.Errorf("invalid condition value type: %T", cond)

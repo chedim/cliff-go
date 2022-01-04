@@ -1,4 +1,4 @@
-package cliff
+package parser
 
 import (
 	"bufio"
@@ -133,6 +133,7 @@ func (s *Scanner) Scan() (result *Tokenized) {
 }
 
 func (s *Scanner) scanWhitespace() (result *Tokenized) {
+  s.t = nil
   result = new(Tokenized)
   result.Token = WS
   result.Span = s.Position()
@@ -174,8 +175,11 @@ func (s *Scanner) scanWords() (toks []*Tokenized) {
   toks = make([]*Tokenized, 0)
   fmt.Printf("scanning words\n")
   for tok, e := s.Peek(); e == nil && (tok.Token == WS || tok.Token == WORD); tok, e = s.Peek() {
+    if e != nil {
+      panic(e)
+    }
+    fmt.Printf("Scanwords: %s %s\n", tok.Token, tok.Literal)
     if tok.Token == WORD {
-      fmt.Printf("Scanwords: %s %s\n", tok.Token, tok.Literal)
       toks = append(toks, tok)
     }
     s.Scan()
@@ -213,6 +217,8 @@ var Keywords = map[string]Token{
   "when": WHEN,
   "then": THEN,
   "and": AND,
+  "true": TRUE,
+  "false": FALSE,
   "or": OR,
   "of": OF,
   "nd": ND,

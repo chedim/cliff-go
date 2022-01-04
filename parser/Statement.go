@@ -1,4 +1,4 @@
-package cliff
+package parser
 
 import "fmt"
 
@@ -6,7 +6,7 @@ type Statement struct {
   parent *Statement
   location Span
   abstract bool
-	target []string
+	target *Reference
   plural bool
   labels []*Datapoint
   definitions []*Definition
@@ -17,40 +17,24 @@ func ReadStatement(scanner *Scanner) (statement *Statement, err *ParserError){
   statement = new(Statement)
   statement.location = *scanner.Position()
 
-  if firstWord, e := scanner.Peek(); e == nil {
-    if firstWord.Keyword {
-      if firstWord.Token != A && firstWord.Token != AN {
-        return nil, NewParserError(*scanner.Position(), fmt.Sprint("unexpected token: ", firstWord.Token, " ", firstWord.Literal))
-      }
-      statement.abstract = true
-      scanner.Scan()
-    } else {
-      fmt.Printf("first token is not a keyword: %s %s\n", firstWord.Token, firstWord.Literal)
-    }
-  } else {
-    return nil, ExtendParserError(*scanner.Position(), e)
+  statement.target, err = ReadReference(scanner)
+  if err != nil {
+    return nil, err
   }
 
-  targetName := scanner.scanWords()
-  if len(targetName) == 0 {
-    return nil, NewParserError(*scanner.Position(), "Expected reference but got a keyword")
-  }
-
-  statement.target = NormalizedTextArray(targetName)
-
-  scanner.scanWhitespace()
   operator, ope := scanner.Peek();
   if ope != nil {
     return nil, ExtendParserError(*scanner.Position(), ope)
   }
-
+  fmt.Printf("Operator token: %s %s\n", operator.Token, operator.Literal)
   if operator.Token == IS {
     return statement, statement.fillSingularStatement(scanner)
   } else if operator.Token == ARE {
+    return nil, NewParserError(*scanner.Position(), "plurals todo")
     //return FillPluralStatement(statement)
   }
 
-  return nil, NewParserError(*scanner.Position(), "Expected definition but got something else")
+  return nil, NewParserError(*scanner.Position(), fmt.Sprintf("Expected definition but got something else: %s %s", operator.Token, operator.Literal))
 }
 
 func (statement *Statement) fillSingularStatement(scanner *Scanner) *ParserError {
@@ -72,7 +56,7 @@ func (statement *Statement) fillSingularStatement(scanner *Scanner) *ParserError
     if err != nil {
       return err
     }
-    def.Condition = cnd
+    def.condition = cnd
     statement.definitions = append(statement.definitions, def)
   } else if first.Token == IS {
     def, err := ReadDefinition(scanner)
@@ -167,7 +151,7 @@ func (s *Statement) readSubStatement(scanner *Scanner) *ParserError {
   ss, err := ReadStatement(scanner)
   ss.parent = s
   if err != nil {
-    return err
+    return WrapParserError(err, "Failed to read sub-statement")
   }
 
   s.subStatements = append(s.subStatements, ss)
@@ -185,7 +169,7 @@ func (statement *Statement) readPositionExpression(scanner *Scanner) *ParserErro
   scanner.Scan()
   scanner.scanWhitespace()
   ps := &Statement{location: *scanner.Position(), parent: statement}
-  ps.target = []string{"position"}
+  ps.target = NewReference("position")
 
   statement.subStatements = append(statement.subStatements, ps)
   return nil
@@ -195,6 +179,6 @@ func (s *Statement) Dependencies() []*Datapoint {
   return nil
 }
 
-func (s *Statement) Target() []string {
+func (s *Statement) Target() AnExpression {
   return s.target
 }
