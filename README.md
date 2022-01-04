@@ -1,2 +1,2 @@
 # cliff-go
-Go implementation of cliff machine
+Embeddable implementation of cliff machine in Golang
