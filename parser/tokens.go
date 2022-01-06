@@ -32,6 +32,7 @@ const (
   RCURL     // }
   SLASH     // /
   BSLASH    // \
+  EQL       // =
   OTHER
 
 	// KEYWORDS

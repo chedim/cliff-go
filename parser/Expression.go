@@ -2,8 +2,6 @@ package parser
 
 import "fmt"
 
-type AValue interface {
-}
 
 type AnExpression interface {
 	Span() *Span
@@ -14,40 +12,70 @@ type NumberLiteral struct {
 	value int
 }
 
-type ReferenceExpression struct {
-	value []*Tokenized
+type ExpressionReader func(scanner *Scanner, stack *Stack) *ParserError
+type ExpressionJoiner func(l AnExpression, r AnExpression) AnExpression
+
+func binaryOperator(op BinaryOperator) ExpressionReader {
+  return func(scanner *Scanner, stack *Stack) *ParserError {
+    scanner.Scan()
+    if stack.Len() == 0 {
+      return NewParserError(*scanner.Position(), "missing left operand")
+    }
+
+    left := stack.Pop().(AnExpression)
+    right, err := ReadExpression(scanner)
+    if err != nil {
+      return err
+    }
+
+    stack.Push(NewBinaryExpression(left, right, op))
+    return nil
+  }
 }
 
-type ConditionalExpression struct {
-	value     AnExpression
-	condition AnExpression
+var valueHandlers map[Token]ExpressionReader
+
+func init() {
+  valueHandlers = map[Token]ExpressionReader{
+    QUOTE:  readSingleQuotedString,
+    DQUOTE: readDoubleQuotedString,
+    WORD: readReference,
+    NUMBER: readNumber,
+    WS: skipToken,
+    EOL: skipToken,
+    TRUE: trueExpression,
+    FALSE: falseExpression,
+    PLUS: binaryOperator(add),
+    MINUS: binaryOperator(sub),
+    SLASH: binaryOperator(div),
+    ASTERISK: binaryOperator(mul),
+  }
 }
 
-type BinaryExpression struct {
-	Operator
-	Left  AnExpression
-	Right AnExpression
+func add(l AValue, r AValue) AValue {
+  return l.(Addable).Add(r)
 }
 
-var valueHandlers = map[Token]func(scanner *Scanner, stack *Stack) *ParserError {
-	QUOTE:  readSingleQuotedString,
-	DQUOTE: readDoubleQuotedString,
-	WORD: readReference,
-	NUMBER: readNumber,
-  WS: skipToken,
-  EOL: skipToken,
-  TRUE: trueExpression,
-  FALSE: falseExpression,
+func sub(l AValue, r AValue) AValue {
+  return l.(Subtractable).Sub(r)
+}
+
+func div(l AValue, r AValue) AValue {
+  return l.(Dividable).Div(r)
+}
+
+func mul(l AValue, r AValue) AValue {
+  return l.(Multipliable).Mul(r)
 }
 
 func trueExpression(scanner *Scanner, stack *Stack) *ParserError {
-  stack.Push(NewConstExpression(scanner.Position(), true))
+  stack.Push(NewConstExpression(scanner.Position(), Bool(true)))
   scanner.Scan()
   return nil
 }
 
 func falseExpression(scanner *Scanner, stack *Stack) *ParserError {
-  stack.Push(NewConstExpression(scanner.Position(), false))
+  stack.Push(NewConstExpression(scanner.Position(), Bool(false)))
   scanner.Scan()
   return nil
 }

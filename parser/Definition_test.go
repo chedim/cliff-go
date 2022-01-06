@@ -15,12 +15,12 @@ func TestReadDefinition(t *testing.T) {
   }
 
   definition := def.Definition()
-  if definition.Value() != true {
+  if definition.Value() != Bool(true) {
     t.Errorf("invalid definition value: %s", definition.Value())
   }
 
   condition := def.Condition()
-  if condition.Value() != true {
+  if condition.Value() != Bool(true) {
     t.Errorf("invalid condition value: %s", condition.Value())
   }
 

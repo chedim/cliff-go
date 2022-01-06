@@ -80,3 +80,15 @@ func (s *Stack) Pop() interface{} {
   s.Remove(tail)
   return val
 }
+
+func (s *Stack) Peek() interface{} {
+  s.mut.Lock()
+  defer s.mut.Unlock()
+  if s.Len() == 0 {
+    return nil
+  }
+
+  return s.Back().Value
+}
+
+

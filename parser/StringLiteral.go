@@ -87,6 +87,6 @@ func (s *StringLiteral) Span() *Span {
 }
 
 func (s *StringLiteral) Value() AValue {
-  var result AValue = s.value
+  var result AValue = String(s.value)
   return result
 }

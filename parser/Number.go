@@ -2,17 +2,25 @@ package parser
 
 import (
 	"fmt"
+	"reflect"
 	"strconv"
 )
 
-type Number struct {
-	span    *Span
-	isFloat bool
-	vFloat  float64
-	vInt    int64
+type ANumber interface{
+  AValue
+  Addable
+  Subtractable
+  Dividable
+  Multipliable
+  Comparable
 }
 
-func ReadNumber(scanner *Scanner) (*Number, *ParserError) {
+type NumberExpression struct {
+	span    *Span
+	value  ANumber
+}
+
+func ReadNumber(scanner *Scanner) (AnExpression, *ParserError) {
 	vInt, e := scanner.Peek()
 	if e != nil {
 		return nil, ExtendParserError(*scanner.Position(), e)
@@ -25,7 +33,7 @@ func ReadNumber(scanner *Scanner) (*Number, *ParserError) {
 	}
 
   scanner.Scan()
-	result := &Number{
+	result := &NumberExpression{
 		span: vInt.Span,
 	}
 
@@ -34,45 +42,49 @@ func ReadNumber(scanner *Scanner) (*Number, *ParserError) {
 		return nil, ExtendParserError(*scanner.Position(), err)
 	}
 	if tok.Token == DOT {
-		result.isFloat = true
 		result.span = result.span.Extend(tok.Span)
 		scanner.Scan()
 		tok, e = scanner.Peek()
 		if e != nil {
 			return nil, ExtendParserError(*scanner.Position(), e)
 		}
+    var val float64
 		if tok.Token == NUMBER {
 			vFraction := scanner.scanNumber()
-      result.vFloat, e = strconv.ParseFloat(fmt.Sprintf("%s.%s", vInt.Literal, vFraction.Literal), 64)
+      val, e = strconv.ParseFloat(fmt.Sprintf("%s.%s", vInt.Literal, vFraction.Literal), 64)
       if e != nil {
         return nil, ExtendParserError(*scanner.Position(), e)
       }
 			result.span = result.span.Extend(vFraction.Span)
 		} else {
-      result.vFloat, e = strconv.ParseFloat(vInt.Literal, 64)
+      val, e = strconv.ParseFloat(vInt.Literal, 64)
       if e != nil {
         return nil, ExtendParserError(*scanner.Position(), e)
       }
     }
+    result.value = Float(val)
 	} else {
-    result.vInt, e = strconv.ParseInt(vInt.Literal, 10, 64)
+    var val int64
+    val, e = strconv.ParseInt(vInt.Literal, 10, 64)
     if e != nil {
       return nil, ExtendParserError(*scanner.Position(), e)
     }
+    result.value = Integer(val)
   }
   return result, nil
 }
 
-func (n *Number) Span() *Span {
+func (n *NumberExpression) Type() Type {
+  if n.value == nil {
+    return Type(reflect.Invalid)
+  }
+  return n.value.Type()
+}
+
+func (n *NumberExpression) Span() *Span {
 	return n.span
 }
 
-func (n *Number) Value() AValue {
-  var ret AValue
-  if n.isFloat {
-    ret = n.vFloat
-  } else {
-    ret = n.vInt
-  }
-  return &ret
+func (n *NumberExpression) Value() AValue {
+  return n.value
 }

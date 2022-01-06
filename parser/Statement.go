@@ -179,6 +179,6 @@ func (s *Statement) Dependencies() []*Datapoint {
   return nil
 }
 
-func (s *Statement) Target() AnExpression {
+func (s *Statement) Target() *Reference {
   return s.target
 }

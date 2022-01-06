@@ -1,4 +1,4 @@
-package parser
+package parser;
 
 type Definition struct {
 	value     AnExpression

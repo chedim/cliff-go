@@ -224,6 +224,7 @@ var Keywords = map[string]Token{
   "nd": ND,
   "rd": RD,
   "th": TH,
+  "=" : EQL,
 }
 
 func detectKeyword(in *Tokenized) *Tokenized {

@@ -13,9 +13,9 @@ func TestReadStatement(t *testing.T) {
     t.Errorf("failed to read a statement: %s", err)
   }
 
-  target := statement.Target().Value().([]string)
-  if len(target) != 2 || target[0] != "application" || target[1] != "output" {
-    t.Errorf("invalid target: '%s'", strings.Join(target, "."))
+  target := statement.Target()
+  if len(target.names) != 2 || target.names[0] != "application" || target.names[1] != "output" {
+    t.Errorf("invalid target: '%s'", target.names)
   }
 
   if len(statement.definitions) != 1 {
@@ -23,8 +23,8 @@ func TestReadStatement(t *testing.T) {
   }
 
   def := statement.definitions[0]
-  expected := "Hello, world"
-  actual, ok := def.Value().(string)
+  expected := String("Hello, world")
+  actual, ok := def.Value().(String)
   if !ok {
     t.Errorf("invalid definition type: %T", def.Value())
   }
@@ -37,7 +37,7 @@ func TestReadStatement(t *testing.T) {
   }
 
   cond := def.Condition().Value()
-  if cv, ok := cond.(bool); !cv || !ok {
+  if cv, ok := cond.(Bool); !cv || !Bool(ok) {
     if !ok {
       t.Errorf("invalid condition value type: %T", cond)
     }
