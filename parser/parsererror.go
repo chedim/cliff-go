@@ -3,6 +3,7 @@ package parser
 import (
 	"errors"
 	"fmt"
+	"strings"
 )
 
 type ParserError struct {
@@ -32,5 +33,6 @@ func ExtendParserError(location Span, err error) *ParserError {
 }
 
 func (pe *ParserError) Error() string {
-  return fmt.Sprint("(", pe.Location.StartLine, ":", pe.Location.StartColumn, ") ", pe.error.Error())
+  debug := pe.Location.String()
+  return fmt.Sprint("\n", debug, "\n", strings.Repeat(" ", len(debug) - 1), "^-- ", pe.error.Error(), "\n")
 }

@@ -35,24 +35,28 @@ func _() {
 	_ = x[OTHER-24]
 	_ = x[A-25]
 	_ = x[AN-26]
-	_ = x[ARE-27]
-	_ = x[AT-28]
-	_ = x[IS-29]
-	_ = x[WHEN-30]
-	_ = x[AND-31]
-	_ = x[OR-32]
-	_ = x[OF-33]
-	_ = x[THEN-34]
-	_ = x[TRUE-35]
-	_ = x[FALSE-36]
-	_ = x[ND-37]
-	_ = x[RD-38]
-	_ = x[TH-39]
+	_ = x[THE-27]
+	_ = x[ARE-28]
+	_ = x[AT-29]
+	_ = x[IS-30]
+	_ = x[WHEN-31]
+	_ = x[AND-32]
+	_ = x[OR-33]
+	_ = x[OF-34]
+	_ = x[THEN-35]
+	_ = x[TRUE-36]
+	_ = x[FALSE-37]
+	_ = x[ND-38]
+	_ = x[RD-39]
+	_ = x[TH-40]
+	_ = x[FIRST-41]
+	_ = x[LAST-42]
+	_ = x[NEXT-43]
 }
 
-const _Token_name = "ILLEGALEOFEOLWSWORDNUMBERASTERISKCOMMACOLONSEMICOLONPLUSMINUSDOTQUOTEDQUOTELBRARBRALPARENRPARENLCURLRCURLSLASHBSLASHEQLOTHERAANAREATISWHENANDOROFTHENTRUEFALSENDRDTH"
+const _Token_name = "ILLEGALEOFEOLWSWORDNUMBERASTERISKCOMMACOLONSEMICOLONPLUSMINUSDOTQUOTEDQUOTELBRARBRALPARENRPARENLCURLRCURLSLASHBSLASHEQLOTHERAANTHEAREATISWHENANDOROFTHENTRUEFALSENDRDTHFIRSTLASTNEXT"
 
-var _Token_index = [...]uint8{0, 7, 10, 13, 15, 19, 25, 33, 38, 43, 52, 56, 61, 64, 69, 75, 79, 83, 89, 95, 100, 105, 110, 116, 119, 124, 125, 127, 130, 132, 134, 138, 141, 143, 145, 149, 153, 158, 160, 162, 164}
+var _Token_index = [...]uint8{0, 7, 10, 13, 15, 19, 25, 33, 38, 43, 52, 56, 61, 64, 69, 75, 79, 83, 89, 95, 100, 105, 110, 116, 119, 124, 125, 127, 130, 133, 135, 137, 141, 144, 146, 148, 152, 156, 161, 163, 165, 167, 172, 176, 180}
 
 func (i Token) String() string {
 	if i < 0 || i >= Token(len(_Token_index)-1) {

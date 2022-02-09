@@ -38,6 +38,7 @@ const (
 	// KEYWORDS
   A
   AN
+  THE
   ARE
   AT
 	IS
@@ -51,5 +52,8 @@ const (
   ND
   RD
   TH
+  FIRST
+  LAST
+  NEXT
 )
 

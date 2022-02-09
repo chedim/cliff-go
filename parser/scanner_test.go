@@ -51,10 +51,7 @@ func TestHelloWorld(t *testing.T) {
 
   scanner := NewCliffScanner(source)
 
-  token, e := scanner.Peek()
-  if e != nil {
-    t.Errorf("Failed to peek %e", e)
-  }
+  token := scanner.Peek()
   if token.Token != WORD {
     t.Error("token is not a word")
   }
@@ -80,10 +77,7 @@ func TestHelloWorld(t *testing.T) {
     t.Errorf("scanned literal is not hello: %s", scanned.Literal)
   }
 
-  token, e = scanner.Peek()
-  if e != nil {
-    t.Errorf("failed to peek: %s", e)
-  }
+  token = scanner.Peek()
 
   if token.Token != COMMA {
     t.Errorf("token is not COMMA: %s", token.Token)
@@ -106,7 +100,7 @@ func TestHelloWorld(t *testing.T) {
     t.Errorf("scanned literal is not comma: %s", scanned.Literal)
   }
 
-  token, e = scanner.Peek()
+  token = scanner.Peek()
   if token.Literal != " " {
     t.Errorf("expected to peek a space but got: '%s'", token.Literal)
   }
@@ -125,10 +119,7 @@ func TestHelloWorld(t *testing.T) {
     t.Errorf("unexpected scan literal '%s'", scanned.Literal)
   }
 
-  token, e = scanner.Peek()
-  if e != nil {
-    t.Errorf("failed to peek, %s", e)
-  }
+  token = scanner.Peek()
 
   if token.Token != WORD {
     t.Errorf("token is not WORD but %s", token.Token)
@@ -145,10 +136,7 @@ func TestHelloWorld(t *testing.T) {
     t.Errorf("scanned literal is not 'world': %s", scanned.Literal)
   }
 
-  token, e = scanner.Peek()
-  if e != nil {
-    t.Errorf("failed to peek: %s", e)
-  }
+  token = scanner.Peek()
 
   if token.Token != EOL {
     t.Errorf("token is not EOL: %s", token.Token)
@@ -165,10 +153,7 @@ func TestHelloWorld(t *testing.T) {
     t.Errorf("scanned literal is invalid: %s", scanned.Literal)
   }
 
-  token, e = scanner.Peek()
-  if e != nil {
-    t.Errorf("failed to peek: %s", e)
-  }
+  token = scanner.Peek()
   if token.Token != NUMBER {
     t.Errorf("invalid token: %s", token.Token)
   }
@@ -187,10 +172,7 @@ func TestHelloWorld(t *testing.T) {
     t.Errorf("invalid scanned literal: %s", scanned.Literal)
   }
 
-  token, e = scanner.Peek()
-  if e != nil {
-    t.Errorf("failed to peek: %s", e)
-  }
+  token = scanner.Peek()
   if token.Token != ND {
     t.Errorf("invalid token: %s", token.Token)
   }

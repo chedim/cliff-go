@@ -1,6 +1,10 @@
 package parser
 
-import "fmt"
+import (
+	"fmt"
+
+	"go.uber.org/zap"
+)
 
 
 type AnExpression interface {
@@ -81,15 +85,10 @@ func falseExpression(scanner *Scanner, stack *Stack) *ParserError {
 }
 
 func skipToken(scanner *Scanner, stack *Stack) *ParserError {
-  tok, e := scanner.Peek()
-  if e != nil {
-    return ExtendParserError(*scanner.Position(), e)
-  }
+  tok := scanner.Peek()
   if (tok.Token == EOL) {
-    fmt.Println("skipping EOL")
     scanner.Scan()
   } else if tok.Token == WS {
-    fmt.Printf("skipping WS '%s' @%d\n", tok.Literal, scanner.offset)
     scanner.scanWhitespace()
   } else {
     return NewParserError(*scanner.Position(), fmt.Sprintf("Unable to skip token %s %s", tok.Token, tok.Literal))
@@ -137,15 +136,18 @@ func readDoubleQuotedString(scanner *Scanner, s *Stack) *ParserError {
 func ReadExpression(scanner *Scanner) (AnExpression, *ParserError) {
   stk := NewStack()
   start := *scanner.Position()
+  logger, _ := zap.NewDevelopment()
+  l := logger.Sugar()
+  l.Debug(scanner.Position().String(), " | Reading expression")
 
-  for tok, err := scanner.Peek(); tok.Token != EOF; tok, err = scanner.Peek() {
-    if err != nil {
-      return nil, ExtendParserError(*scanner.Position(), err)
-    }
+  for tok := scanner.Peek(); tok.Token != EOF; tok = scanner.Peek() {
+    l.Debugf("expr token: %+v", tok)
     handler, exists := valueHandlers[tok.Token]
     if !exists {
+      l.Debug("^^ no handler")
       break
     }
+    l.Debug("^^ delegating to handler")
     e := handler(scanner, stk)
     if e != nil {
       return nil, e

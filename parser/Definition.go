@@ -1,39 +1,30 @@
-package parser;
+package parser
+
+import (
+	"fmt"
+)
 
 type Definition struct {
 	value     AnExpression
 	condition AnExpression
 }
 
+
 func ReadDefinition(scanner *Scanner) (*Definition, *ParserError) {
 	result := &Definition{}
 
-	tok, e := scanner.Peek()
-	if e != nil {
-		return nil, ExtendParserError(*scanner.Position(), e)
-	}
-	if tok.Token != IS && tok.Token != MINUS {
-		return nil, NewParserError(*scanner.Position(), "tried to read definition starting from a token that is not IS or MINUS")
-	}
-	scanner.Scan()
-
-	scanner.scanWhitespace()
-	tok, e = scanner.Peek()
-	if e != nil {
-		return nil, ExtendParserError(*scanner.Position(), e)
-	}
-	if tok.Token != WHEN {
-		exp, err := ReadExpression(scanner)
-		if err != nil {
-			return nil, err
-		}
-		result.value = exp
+  tok := scanner.Peek()
+	if !isExpressionToken(tok.Token) {
+		return nil, NewParserError(*scanner.Position(), fmt.Sprintf("tried to read definition starting from a token that is not an expression token: %s '%s'", tok.Token, tok.Literal))
 	}
 
-	tok, e = scanner.Peek()
-	if e != nil {
-		return nil, ExtendParserError(*scanner.Position(), e)
-	}
+  exp, err := ReadExpression(scanner)
+  if err != nil {
+    return nil, err
+  }
+  result.value = exp
+
+	tok = scanner.Peek()
 
 	if tok.Token == WHEN {
 		scanner.Scan()

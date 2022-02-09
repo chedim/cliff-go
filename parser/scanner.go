@@ -24,14 +24,16 @@ func isNumber(ch rune) bool {
   return ch >= '0' && ch <= '9'
 }
 
+func isExpressionToken(t Token) bool {
+  return t == WORD || t == NUMBER || t == QUOTE || t == MINUS || t == DQUOTE || t == TRUE || t == FALSE
+}
 type Scanner struct {
 	r *bufio.Reader
   offset int
   line int
   column int
   t *Tokenized
-  lineBuffer *string
-  peekedLine *string
+  debugBuffer string
   preserveCase bool
 }
 
@@ -54,8 +56,10 @@ func (s *Scanner) read() rune {
   }
   s.offset++
   if res != '\n' {
+    s.debugBuffer = s.debugBuffer + string(res)
     s.column++
   } else {
+    s.debugBuffer = ""
     s.line++
     s.column = 0
   }
@@ -63,10 +67,6 @@ func (s *Scanner) read() rune {
 }
 
 func (s *Scanner) peek() rune {
-  if s.lineBuffer != nil && s.column < len(*s.lineBuffer) {
-    return []rune(*s.lineBuffer)[s.column]
-  }
-
   ch, _, e := s.r.ReadRune()
   if e != nil {
     return eof
@@ -75,12 +75,12 @@ func (s *Scanner) peek() rune {
   return ch
 }
 
-func (s *Scanner) Peek() (*Tokenized, error) {
+func (s *Scanner) Peek() *Tokenized {
   if s.t != nil {
-    return s.t, nil
+    return s.t
   }
   s.t = s.Scan()
-  return s.t, nil
+  return s.t
 }
 
 var specialCharacters = map[rune]Token {
@@ -160,12 +160,13 @@ func (s *Scanner) Position() *Span {
     StartColumn: s.column,
     EndLine: s.line,
     EndColumn: s.column,
+    Debug: s.debugBuffer,
   }
 }
 
 func (s *Scanner) scanKeywords() (toks []*Tokenized) {
   toks = make([]*Tokenized, 0)
-  for tok, e := s.Peek(); e == nil && tok.Keyword; tok, e = s.Peek() {
+  for tok := s.Peek(); tok.Keyword; tok = s.Peek() {
     toks = append(toks, s.Scan())
   }
   return
@@ -173,12 +174,7 @@ func (s *Scanner) scanKeywords() (toks []*Tokenized) {
 
 func (s *Scanner) scanWords() (toks []*Tokenized) {
   toks = make([]*Tokenized, 0)
-  fmt.Printf("scanning words\n")
-  for tok, e := s.Peek(); e == nil && (tok.Token == WS || tok.Token == WORD); tok, e = s.Peek() {
-    if e != nil {
-      panic(e)
-    }
-    fmt.Printf("Scanwords: %s %s\n", tok.Token, tok.Literal)
+  for tok := s.Peek(); tok.Token == WS || tok.Token == WORD; tok = s.Peek() {
     if tok.Token == WORD {
       toks = append(toks, tok)
     }
@@ -212,6 +208,7 @@ func (s *Scanner) scanWord() (result *Tokenized) {
 
 var Keywords = map[string]Token{
   "a": A,
+  "the": THE,
   "is": IS,
   "are": ARE,
   "when": WHEN,
@@ -225,6 +222,9 @@ var Keywords = map[string]Token{
   "rd": RD,
   "th": TH,
   "=" : EQL,
+  "first": FIRST,
+  "last": LAST,
+  "next": NEXT,
 }
 
 func detectKeyword(in *Tokenized) *Tokenized {
@@ -252,10 +252,7 @@ func (s *Scanner) scanNumber() (result *Tokenized) {
 }
 
 func (s *Scanner) scanOffset(size int) (bool, *ParserError) {
-  tok, e := s.Peek()
-  if e != nil {
-    return false, ExtendParserError(*s.Position(), e)
-  }
+  tok := s.Peek()
 
   if tok.Token != WS || tok.Length < size {
     return false, nil
@@ -281,4 +278,8 @@ func (s *Scanner) PreserveCase(pc bool) (old bool) {
   old = s.preserveCase
   s.preserveCase = pc
   return
+}
+
+func (s *Scanner) Error(msg string, args ...interface{}) (*ParserError) {
+  return NewParserError(*s.Position(), fmt.Sprintf(msg, args...))
 }

@@ -9,6 +9,7 @@ type Span struct {
 	StartColumn int
 	EndLine     int
 	EndColumn   int
+  Debug       string
 }
 
 func (s *Span) Extend(o *Span) *Span {
@@ -24,5 +25,5 @@ func (s *Span) Extend(o *Span) *Span {
 }
 
 func (s *Span) String() string {
-  return fmt.Sprintf("%d:%d", s.StartLine, s.StartColumn)
+  return fmt.Sprintf("[%d:%d] : %s", s.StartLine, s.StartColumn, s.Debug)
 }

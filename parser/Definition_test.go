@@ -6,7 +6,7 @@ import (
 )
 
 func TestReadDefinition(t *testing.T) {
-  text := "is true when true"
+  text := "true when true"
   scanner := NewCliffScanner(strings.NewReader(text))
 
   def, err := ReadDefinition(scanner)
@@ -24,7 +24,7 @@ func TestReadDefinition(t *testing.T) {
     t.Errorf("invalid condition value: %s", condition.Value())
   }
 
-  text = "is 30 when something other"
+  text = "30 when something other"
   scanner = NewCliffScanner(strings.NewReader(text))
   def, err = ReadDefinition(scanner)
   if err != nil {

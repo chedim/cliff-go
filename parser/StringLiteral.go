@@ -20,10 +20,7 @@ var escapeCharacterMap = map[rune]rune{
 }
 
 func ReadString(scanner *Scanner, delim Token) (*StringLiteral, *ParserError) {
-	first, ferr := scanner.Peek()
-	if ferr != nil {
-		return nil, ExtendParserError(*scanner.Position(), ferr)
-	}
+	first := scanner.Peek()
 
 	if first.Token != delim {
     return nil, NewParserError(*scanner.Position(), fmt.Sprint("tried to read ", delim, " string at position that does not contain ", delim))
@@ -33,11 +30,7 @@ func ReadString(scanner *Scanner, delim Token) (*StringLiteral, *ParserError) {
 	scanner.Scan()
   scanner.PreserveCase(true)
 	escaped := false
-	for token, err := scanner.Peek(); token.Token != delim || escaped; token, err = scanner.Peek() {
-		if err != nil {
-			return nil, ExtendParserError(*scanner.Position(), err)
-		}
-    fmt.Printf("String token: %s %s\n", token.Token.String(), token.Literal)
+	for token := scanner.Peek(); token.Token != delim || escaped; token = scanner.Peek() {
 		if token.Token == EOF {
 			return nil, NewParserError(result.location, "Infinite string")
 		} else if token.Token == SLASH && !escaped {
@@ -70,10 +63,7 @@ func ReadString(scanner *Scanner, delim Token) (*StringLiteral, *ParserError) {
 		scanner.Scan()
 	}
 
-  tok, err := scanner.Peek()
-  if err != nil {
-    return nil, ExtendParserError(*scanner.Position(), err)
-  }
+  tok := scanner.Peek()
   if tok.Token != delim {
     return nil, NewParserError(*scanner.Position(), fmt.Sprintf("Wrong string end delimeter: %s %s", tok.Token, tok.Literal))
   }

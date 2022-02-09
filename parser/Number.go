@@ -21,10 +21,7 @@ type NumberExpression struct {
 }
 
 func ReadNumber(scanner *Scanner) (AnExpression, *ParserError) {
-	vInt, e := scanner.Peek()
-	if e != nil {
-		return nil, ExtendParserError(*scanner.Position(), e)
-	}
+	vInt := scanner.Peek()
 	if vInt.Token != NUMBER {
     return nil, NewParserError(
       *scanner.Position(),
@@ -37,35 +34,30 @@ func ReadNumber(scanner *Scanner) (AnExpression, *ParserError) {
 		span: vInt.Span,
 	}
 
-  tok, err := scanner.Peek()
-	if err != nil {
-		return nil, ExtendParserError(*scanner.Position(), err)
-	}
+  tok := scanner.Peek()
 	if tok.Token == DOT {
 		result.span = result.span.Extend(tok.Span)
 		scanner.Scan()
-		tok, e = scanner.Peek()
-		if e != nil {
-			return nil, ExtendParserError(*scanner.Position(), e)
-		}
+		tok = scanner.Peek()
     var val float64
 		if tok.Token == NUMBER {
 			vFraction := scanner.scanNumber()
-      val, e = strconv.ParseFloat(fmt.Sprintf("%s.%s", vInt.Literal, vFraction.Literal), 64)
+      parsed, e := strconv.ParseFloat(fmt.Sprintf("%s.%s", vInt.Literal, vFraction.Literal), 64)
       if e != nil {
         return nil, ExtendParserError(*scanner.Position(), e)
       }
+      val = parsed
 			result.span = result.span.Extend(vFraction.Span)
 		} else {
-      val, e = strconv.ParseFloat(vInt.Literal, 64)
+      parsed, e := strconv.ParseFloat(vInt.Literal, 64)
       if e != nil {
         return nil, ExtendParserError(*scanner.Position(), e)
       }
+      val = parsed
     }
     result.value = Float(val)
 	} else {
-    var val int64
-    val, e = strconv.ParseInt(vInt.Literal, 10, 64)
+    val, e := strconv.ParseInt(vInt.Literal, 10, 64)
     if e != nil {
       return nil, ExtendParserError(*scanner.Position(), e)
     }

@@ -4,6 +4,7 @@ type Reference struct {
 	span     *Span
 	names    []string
 	abstract bool
+  plural   bool
 }
 
 func NewReference(names ...string) *Reference {
@@ -11,10 +12,7 @@ func NewReference(names ...string) *Reference {
 }
 
 func ReadReference(scanner *Scanner) (*Reference, *ParserError) {
-	tok, e := scanner.Peek()
-	if e != nil {
-		return nil, ExtendParserError(*scanner.Position(), e)
-	}
+	tok := scanner.Peek()
 	result := &Reference{}
 	if tok.Token == A || tok.Token == AN {
 		scanner.Scan()
@@ -32,8 +30,18 @@ func ReadReference(scanner *Scanner) (*Reference, *ParserError) {
 	span := toks[0].Span.Extend(lt.Span)
 	result.span = span
 	result.names = NormalizedTextArray(toks)
+  result.plural = anyPlural(toks)
 
 	return result, nil
+}
+
+func anyPlural(toks []*Tokenized) bool {
+  for _, tok := range toks {
+    if tok.IsPlural {
+      return true
+    }
+  }
+  return false
 }
 
 func (r *Reference) Span() *Span {

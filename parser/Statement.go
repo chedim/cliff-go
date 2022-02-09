@@ -22,34 +22,57 @@ func ReadStatement(scanner *Scanner) (statement *Statement, err *ParserError){
     return nil, err
   }
 
-  operator, ope := scanner.Peek();
-  if ope != nil {
-    return nil, ExtendParserError(*scanner.Position(), ope)
-  }
-  fmt.Printf("Operator token: %s %s\n", operator.Token, operator.Literal)
+  operator := scanner.Peek();
   if operator.Token == IS {
     return statement, statement.fillSingularStatement(scanner)
   } else if operator.Token == ARE {
-    return nil, NewParserError(*scanner.Position(), "plurals todo")
-    //return FillPluralStatement(statement)
+    return statement, statement.fillPluralStatement(scanner)
+  } else if operator.Token == EOL {
+    scanner.Scan()
+    return statement, statement.readCompoundStatements(scanner)
   }
 
   return nil, NewParserError(*scanner.Position(), fmt.Sprintf("Expected definition but got something else: %s %s", operator.Token, operator.Literal))
 }
 
-func (statement *Statement) fillSingularStatement(scanner *Scanner) *ParserError {
-  first, e := scanner.Peek()
-  if e != nil {
-    return ExtendParserError(*scanner.Position(), e)
+func (statement *Statement) fillPluralStatement(scanner *Scanner) *ParserError {
+  token := scanner.Peek()
+  if token.Token != ARE {
+    return scanner.Error("tried to fill plural statement starting with wrong token: %s %s", token.Token, token.Literal)
   }
+  scanner.Scan()
+  scanner.scanWhitespace()
 
+  token = scanner.Peek()
+  if token.Token == AT {
+    return statement.readPositionExpression(scanner)
+  } else if token.Token == COLON {
+    return statement.readAlternativeDefinitions(scanner)
+  } else if isExpressionToken(token.Token) {
+    def, err := ReadDefinition(scanner)
+    if err != nil {
+      return err
+    }
+    statement.definitions = append(statement.definitions, def)
+  } else {
+    return scanner.Error("Unexpected token %s '%s'", token.Token, token.Literal)
+  }
+  return nil
+}
+
+func (statement *Statement) fillSingularStatement(scanner *Scanner) *ParserError {
+  start := scanner.Peek()
+  if start.Token != IS {
+    return NewParserError(*scanner.Position(), fmt.Sprintf("tried to fill singular statement starting with wrong token: %s %s", start.Token, start.Literal))
+  }
+  scanner.Scan()
+  scanner.scanWhitespace()
+
+  first := scanner.Peek()
   if first.Token == AT {
     return statement.readPositionExpression(scanner)
   } else if first.Token == COLON {
     return statement.readAlternativeDefinitions(scanner)
-  } else if first.Token == EOL {
-    scanner.Scan()
-    return statement.readCompoundStatements(scanner)
   } else if first.Token == WHEN {
     def := &Definition{}
     cnd, err := ReadExpression(scanner)
@@ -58,42 +81,33 @@ func (statement *Statement) fillSingularStatement(scanner *Scanner) *ParserError
     }
     def.condition = cnd
     statement.definitions = append(statement.definitions, def)
-  } else if first.Token == IS {
+  } else if isExpressionToken(first.Token) {
     def, err := ReadDefinition(scanner)
     if err != nil {
       return err
     }
     statement.definitions = append(statement.definitions, def)
   } else {
-    return NewParserError(*scanner.Position(), fmt.Sprintf("tried to fill singular statement starting with wrong token: %s %s", first.Token, first.Literal))
+    return NewParserError(*scanner.Position(), fmt.Sprintf("Unexpected token %s '%s'", first.Token, first.Literal))
   }
   return nil
 }
 
 func (statement *Statement) readAlternativeDefinitions(scanner *Scanner) *ParserError {
-  ft, e := scanner.Peek()
-  if e != nil {
-    return ExtendParserError(*scanner.Position(), e)
-  }
+  ft := scanner.Peek()
   if ft.Token != COLON {
     return NewParserError(*scanner.Position(), "tried to read alternative definitions starting with token that is not COLON")
   }
   scanner.Scan()
 
   scanner.scanWhitespace()
-  ft, e = scanner.Peek()
-  if e != nil {
-    return ExtendParserError(*scanner.Position(), e)
-  }
+  ft = scanner.Peek()
   if ft.Token != EOL {
     return NewParserError(*scanner.Position(), fmt.Sprintf("expected new line but got: %s", ft.Token))
   }
   scanner.Scan()
 
-  for ft, e = scanner.Peek(); ft == nil || ft.Token == MINUS; ft, e = scanner.Peek() {
-    if e != nil {
-      return ExtendParserError(*scanner.Position(), e)
-    }
+  for ft = scanner.Peek(); ft == nil || ft.Token == MINUS; ft = scanner.Peek() {
     if ft == nil {
       return NewParserError(*scanner.Position(), "ft is null")
     }
@@ -109,10 +123,7 @@ func (statement *Statement) readAlternativeDefinitions(scanner *Scanner) *Parser
 
 func (statement *Statement) readCompoundStatements(scanner *Scanner) *ParserError {
   scanner.scanWhitespace()
-  tok, e := scanner.Peek()
-  if e != nil {
-    return ExtendParserError(*scanner.Position(), e)
-  }
+  tok := scanner.Peek()
   if tok.Token != EOL {
     return NewParserError(*scanner.Position(), fmt.Sprintf("unexpected token in compound statement start: %s %s", tok.Token, tok.Literal))
   }
@@ -123,10 +134,7 @@ func (statement *Statement) readCompoundStatements(scanner *Scanner) *ParserErro
       return ExtendParserError(*scanner.Position(), e)
     }
 
-    nextToken, err := scanner.Peek()
-    if err != nil {
-      return ExtendParserError(*scanner.Position(), err)
-    }
+    nextToken := scanner.Peek()
     if nextToken.Token == WS {
       err := statement.readSubStatement(scanner)
       if err != nil {
@@ -139,10 +147,7 @@ func (statement *Statement) readCompoundStatements(scanner *Scanner) *ParserErro
 }
 
 func (s *Statement) readSubStatement(scanner *Scanner) *ParserError {
-  ot, e := scanner.Peek()
-  if e != nil {
-    return ExtendParserError(*scanner.Position(), e)
-  }
+  ot := scanner.Peek()
   if ot.Token != WS {
     return NewParserError(*scanner.Position(), "substatements must start with whitespace")
   }
@@ -159,10 +164,7 @@ func (s *Statement) readSubStatement(scanner *Scanner) *ParserError {
 }
 
 func (statement *Statement) readPositionExpression(scanner *Scanner) *ParserError {
-  first, err := scanner.Peek()
-  if err != nil {
-    return ExtendParserError(*scanner.Position(), err)
-  }
+  first := scanner.Peek()
   if first.Token != AT {
     return NewParserError(*scanner.Position(), "trying to read position expression that does not start with AT")
   }
@@ -181,4 +183,8 @@ func (s *Statement) Dependencies() []*Datapoint {
 
 func (s *Statement) Target() *Reference {
   return s.target
+}
+
+func (s *Statement) Definitions() []*Definition {
+  return s.definitions
 }
