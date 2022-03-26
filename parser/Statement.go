@@ -1,23 +1,26 @@
 package parser
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 type Statement struct {
-  parent *Statement
-  location Span
-  abstract bool
-	target *Reference
-  plural bool
-  labels []*Datapoint
-  definitions []*Definition
-  subStatements []*Statement
+  Parent *Statement
+  Location Span
+  Abstract bool
+	Target *Reference
+  Plural bool
+  Labels []*Datapoint
+  Definitions []*Definition
+  SubStatements []*Statement
 }
 
 func ReadStatement(scanner *Scanner) (statement *Statement, err *ParserError){
   statement = new(Statement)
-  statement.location = *scanner.Position()
+  statement.Location = *scanner.Position()
 
-  statement.target, err = ReadReference(scanner)
+  statement.Target, err = ReadReference(scanner)
   if err != nil {
     return nil, err
   }
@@ -53,7 +56,7 @@ func (statement *Statement) fillPluralStatement(scanner *Scanner) *ParserError {
     if err != nil {
       return err
     }
-    statement.definitions = append(statement.definitions, def)
+    statement.Definitions = append(statement.Definitions, def)
   } else {
     return scanner.Error("Unexpected token %s '%s'", token.Token, token.Literal)
   }
@@ -80,13 +83,13 @@ func (statement *Statement) fillSingularStatement(scanner *Scanner) *ParserError
       return err
     }
     def.condition = cnd
-    statement.definitions = append(statement.definitions, def)
+    statement.Definitions = append(statement.Definitions, def)
   } else if isExpressionToken(first.Token) {
     def, err := ReadDefinition(scanner)
     if err != nil {
       return err
     }
-    statement.definitions = append(statement.definitions, def)
+    statement.Definitions = append(statement.Definitions, def)
   } else {
     return NewParserError(*scanner.Position(), fmt.Sprintf("Unexpected token %s '%s'", first.Token, first.Literal))
   }
@@ -116,7 +119,7 @@ func (statement *Statement) readAlternativeDefinitions(scanner *Scanner) *Parser
     if err != nil {
       return err
     }
-    statement.definitions = append(statement.definitions, def)
+    statement.Definitions = append(statement.Definitions, def)
   }
   return nil
 }
@@ -128,7 +131,7 @@ func (statement *Statement) readCompoundStatements(scanner *Scanner) *ParserErro
     return NewParserError(*scanner.Position(), fmt.Sprintf("unexpected token in compound statement start: %s %s", tok.Token, tok.Literal))
   }
 
-  offset := statement.location.StartColumn
+  offset := statement.Location.StartColumn
   for mine, e := scanner.scanOffset(offset); mine; mine, e = scanner.scanOffset(offset) {
     if e != nil {
       return ExtendParserError(*scanner.Position(), e)
@@ -154,12 +157,12 @@ func (s *Statement) readSubStatement(scanner *Scanner) *ParserError {
   scanner.Scan()
 
   ss, err := ReadStatement(scanner)
-  ss.parent = s
+  ss.Parent = s
   if err != nil {
     return WrapParserError(err, "Failed to read sub-statement")
   }
 
-  s.subStatements = append(s.subStatements, ss)
+  s.SubStatements = append(s.SubStatements, ss)
   return nil
 }
 
@@ -170,10 +173,10 @@ func (statement *Statement) readPositionExpression(scanner *Scanner) *ParserErro
   }
   scanner.Scan()
   scanner.scanWhitespace()
-  ps := &Statement{location: *scanner.Position(), parent: statement}
-  ps.target = NewReference("position")
+  ps := &Statement{Location: *scanner.Position(), Parent: statement}
+  ps.Target = NewReference("position")
 
-  statement.subStatements = append(statement.subStatements, ps)
+  statement.SubStatements = append(statement.SubStatements, ps)
   return nil
 }
 
@@ -181,10 +184,10 @@ func (s *Statement) Dependencies() []*Datapoint {
   return nil
 }
 
-func (s *Statement) Target() *Reference {
-  return s.target
-}
-
-func (s *Statement) Definitions() []*Definition {
-  return s.definitions
+func (s *Statement) String() string {
+  if result, err := json.Marshal(s); err != nil {
+    return fmt.Sprintf("ERROR: %s", err)
+  } else {
+    return string(result)
+  }
 }

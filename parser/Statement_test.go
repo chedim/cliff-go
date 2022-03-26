@@ -13,16 +13,16 @@ func TestReadStatement(t *testing.T) {
     t.Errorf("failed to read a statement: %s", err)
   }
 
-  target := statement.Target()
+  target := statement.Target
   if len(target.names) != 2 || target.names[0] != "application" || target.names[1] != "output" {
     t.Errorf("invalid target: '%s'", target.names)
   }
 
-  if len(statement.definitions) != 1 {
-    t.Errorf("invalid number of definitions: %d", len(statement.definitions))
+  if len(statement.Definitions) != 1 {
+    t.Errorf("invalid number of definitions: %d", len(statement.Definitions))
   }
 
-  def := statement.definitions[0]
+  def := statement.Definitions[0]
   expected := String("Hello, world")
   actual, ok := def.Value().(String)
   if !ok {
@@ -52,12 +52,12 @@ func TestPluralStatements(t *testing.T) {
   if parserErr != nil {
     t.Errorf("Failed to read statement: %s", parserErr)
   }
-  target := statement.Target()
+  target := statement.Target
   if len(target.names) != 1 || target.names[0] != "apple" {
     t.Errorf("invalid target: %s", target.names)
   }
 
-  definitions := statement.Definitions()
+  definitions := statement.Definitions
   if len(definitions) != 1 {
     t.Errorf("Invalid number of definitions: %d", len(definitions))
   }
