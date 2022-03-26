@@ -7,26 +7,24 @@ import (
 type Definition struct {
 	value     AnExpression
 	condition AnExpression
+  related   AnExpression
 }
 
 
 func ReadDefinition(scanner *Scanner) (*Definition, *ParserError) {
 	result := &Definition{}
 
-  tok := scanner.Peek()
-	if !isExpressionToken(tok.Token) {
+  if tok := scanner.Peek(); !isExpressionToken(tok.Token) {
 		return nil, NewParserError(*scanner.Position(), fmt.Sprintf("tried to read definition starting from a token that is not an expression token: %s '%s'", tok.Token, tok.Literal))
 	}
 
-  exp, err := ReadExpression(scanner)
-  if err != nil {
+  if exp, err := ReadExpression(scanner); err != nil {
     return nil, err
+  } else {
+    result.value = exp
   }
-  result.value = exp
 
-	tok = scanner.Peek()
-
-	if tok.Token == WHEN {
+  if tok := scanner.Peek(); tok.Token == WHEN {
 		scanner.Scan()
 		scanner.scanWhitespace()
 		exp, err := ReadExpression(scanner)
@@ -35,6 +33,16 @@ func ReadDefinition(scanner *Scanner) (*Definition, *ParserError) {
 		}
 		result.condition = exp
 	}
+
+  if tok := scanner.Peek(); tok.Token == AFTER {
+    scanner.Scan()
+    scanner.scanWhitespace()
+    if exp, err := ReadExpression(scanner); err == nil {
+      result.related = exp
+    } else {
+      return nil, err
+    }
+  }
 
 	return result, nil
 }

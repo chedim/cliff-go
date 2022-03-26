@@ -20,7 +20,7 @@ type NumberExpression struct {
 	value  ANumber
 }
 
-func ReadNumber(scanner *Scanner) (AnExpression, *ParserError) {
+func ReadNumber(scanner *Scanner) (*NumberExpression, *ParserError) {
 	vInt := scanner.Peek()
 	if vInt.Token != NUMBER {
     return nil, NewParserError(

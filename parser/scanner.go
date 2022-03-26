@@ -25,7 +25,7 @@ func isNumber(ch rune) bool {
 }
 
 func isExpressionToken(t Token) bool {
-  return t == WORD || t == NUMBER || t == QUOTE || t == MINUS || t == DQUOTE || t == TRUE || t == FALSE
+  return t == THE || t == WORD || t == NUMBER || t == QUOTE || t == MINUS || t == DQUOTE || t == TRUE || t == FALSE
 }
 type Scanner struct {
 	r *bufio.Reader
@@ -225,6 +225,7 @@ var Keywords = map[string]Token{
   "first": FIRST,
   "last": LAST,
   "next": NEXT,
+  "after": AFTER,
 }
 
 func detectKeyword(in *Tokenized) *Tokenized {

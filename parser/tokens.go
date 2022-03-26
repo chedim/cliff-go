@@ -55,5 +55,6 @@ const (
   FIRST
   LAST
   NEXT
+  AFTER
 )
 

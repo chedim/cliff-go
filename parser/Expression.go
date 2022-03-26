@@ -53,6 +53,7 @@ func init() {
     MINUS: binaryOperator(sub),
     SLASH: binaryOperator(div),
     ASTERISK: binaryOperator(mul),
+    THE: readSliceExpression,
   }
 }
 
@@ -131,6 +132,15 @@ func readDoubleQuotedString(scanner *Scanner, s *Stack) *ParserError {
   }
   s.Push(r)
 	return nil
+}
+
+func readSliceExpression(scanner *Scanner, s *Stack) *ParserError {
+  r, e := ReadSliceExpression(scanner)
+  if e != nil {
+    return e
+  }
+  s.Push(r)
+  return nil
 }
 
 func ReadExpression(scanner *Scanner) (AnExpression, *ParserError) {

@@ -1,5 +1,7 @@
 package parser
 
+import "fmt"
+
 type Reference struct {
 	span     *Span
 	names    []string
@@ -14,16 +16,13 @@ func NewReference(names ...string) *Reference {
 func ReadReference(scanner *Scanner) (*Reference, *ParserError) {
 	tok := scanner.Peek()
 	result := &Reference{}
-	if tok.Token == A || tok.Token == AN {
-		scanner.Scan()
-		result.abstract = true
-	} else if tok.Token != WORD {
-		return nil, NewParserError(*scanner.Position(), "tried to read reference from non-WORD token")
+	if tok.Token == A || tok.Token == AN || tok.Token == THE {
+		return nil, NewParserError(*scanner.Position(), "tried to read reference from an article token")
 	}
 
 	toks := scanner.scanWords()
 	if len(toks) == 0 {
-		return nil, NewParserError(*scanner.Position(), "zero words scanned for a reference")
+    return nil, NewParserError(*scanner.Position(), fmt.Sprintf("zero words scanned for a reference, next token: %s", tok.Token))
 	}
 
 	lt := toks[len(toks)-1]
