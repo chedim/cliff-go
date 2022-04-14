@@ -2,10 +2,12 @@ package parser
 
 import (
 	"container/list"
+	"fmt"
 	"strings"
 	"sync"
 
 	"github.com/gertd/go-pluralize"
+	"go.uber.org/zap"
 )
 
 var pc = pluralize.NewClient()
@@ -55,10 +57,21 @@ func NormalizeTextArray(t []string) []string {
 type Stack struct {
   *list.List
   mut sync.Mutex
+  len int
 }
 
 func NewStack() *Stack {
   return &Stack{List: list.New()}
+}
+
+func (s *Stack) String() string {
+  r := ""
+  i := 0
+  for v := s.List.Back(); v != nil; v = v.Prev()  {
+    r += fmt.Sprintf("%d = %#v\n", i, v.Value)
+    i++
+  }
+  return r
 }
 
 func (s *Stack) Push(x interface{}) {
@@ -66,6 +79,7 @@ func (s *Stack) Push(x interface{}) {
   defer s.mut.Unlock()
 
   s.List.PushBack(x)
+  s.len++
 }
 
 func (s *Stack) Pop() interface{} {
@@ -75,6 +89,7 @@ func (s *Stack) Pop() interface{} {
   if s.Len() == 0 {
     return nil
   }
+  s.len--
   tail := s.Back()
   val := tail.Value
   s.Remove(tail)
@@ -88,7 +103,15 @@ func (s *Stack) Peek() interface{} {
     return nil
   }
 
-  return s.Back().Value
+  return s.Front().Value
 }
 
+func (s *Stack) Len() int {
+  return s.len
+}
 
+func LogDebug(args...interface{}) {
+  logger, _ := zap.NewDevelopment()
+  l := logger.Sugar()
+  l.Debug(args...)
+}

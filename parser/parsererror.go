@@ -11,7 +11,11 @@ type ParserError struct {
 	Location Span
 }
 
-func NewParserError(location Span, message string) *ParserError {
+func NewParserError(location Span, message string, arguments ...interface{}) *ParserError {
+  if (len(arguments) > 0) {
+    message = fmt.Sprintf(message, arguments...)
+  }
+
 	e := new(ParserError)
 	e.error = errors.New(message)
   e.Location = location

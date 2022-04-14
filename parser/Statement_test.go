@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -34,50 +35,34 @@ func TestReadStatement(t *testing.T) {
 
   if def.Condition() == nil {
     t.Errorf("empty condition")
-  }
-
-  cond := def.Condition().Value()
-  if cv, ok := cond.(Bool); !cv || !Bool(ok) {
-    if !ok {
-      t.Errorf("invalid condition value type: %T", cond)
+  } else {
+    cond := def.Condition().Value()
+    if cv, ok := cond.(Bool); !cv || !Bool(ok) {
+      if !ok {
+        t.Errorf("invalid condition value type: %T", cond)
+      }
     }
   }
 }
 
 func TestPluralStatements(t *testing.T) {
-  r := strings.NewReader("apples are fruits")
-  s := NewCliffScanner(r)
-
-  statement, parserErr := ReadStatement(s)
-  if parserErr != nil {
-    t.Errorf("Failed to read statement: %s", parserErr)
-  }
-  target := statement.Target
-  if len(target.names) != 1 || target.names[0] != "apple" {
-    t.Errorf("invalid target: %s", target.names)
-  }
-
-  definitions := statement.Definitions
-  if len(definitions) != 1 {
-    t.Errorf("Invalid number of definitions: %d", len(definitions))
-  }
-  def := definitions[0]
-  defval := def.Definition().(*Reference)
-  if defval == nil {
-    t.Errorf("Definition value is nil: %+v", def.value)
-  }
-  if len(defval.names) != 1 || defval.names[0] != "fruit" {
-    t.Errorf("Definition reference is invalid: %v", defval.names)
-  }
-  if !defval.plural {
-    t.Errorf("Definition value is not plural")
-  }
-
-  r = strings.NewReader("apples are the next 10 fruits")
-  s = NewCliffScanner(r)
-
-  statement, parserErr = ReadStatement(s)
-  if parserErr != nil {
-    t.Errorf("Failed to read statement: %s", parserErr)
+  if stmt, err := ParseStatement("values are:\n 2\n 4\n \"6\""); err != nil {
+    t.Errorf("Failed to read statement: %s", err)
+  } else if name := stmt.Target.Target().Name(); name != "value" {
+    t.Errorf("Unexpected target datapoint name: %s", name)
+  } else if dfns := stmt.Definitions; len(dfns) != 3 {
+    t.Errorf("Unexpected definitons number: %d", len(dfns))
+  } else if dfns[0].Value().String() != "2" {
+    t.Errorf("Invalid value at index 0: %s", dfns[0].Value().String())
+  } else if dfns[0].Value().Type() != Type(reflect.Int64) {
+    t.Errorf("Invalid value type at index 0: %+v", dfns[0].Value().Type())
+  } else if dfns[1].Value().String() != "4" {
+    t.Errorf("Invalid value at index 1: %s", dfns[1].Value().String())
+  } else if dfns[1].Value().Type() != Type(reflect.Int64) {
+    t.Errorf("Invalid value type at index 1: %+v", dfns[1].Value().Type())
+  } else if dfns[2].Value().String() != "6" {
+    t.Errorf("Invalid value at index 2: %s", dfns[2].Value().String())
+  } else if dfns[2].Value().Type() != Type(reflect.String) {
+    t.Errorf("Invalid value type at index 2: %+v", dfns[2].Value().Type())
   }
 }

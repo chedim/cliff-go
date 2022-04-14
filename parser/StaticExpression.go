@@ -17,3 +17,7 @@ func (s *ConstExpression) Span() *Span {
 func (s *ConstExpression) Value() AValue {
   return s.value
 }
+
+func (s *ConstExpression) String() string {
+  return s.value.String()
+}

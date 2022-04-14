@@ -80,3 +80,7 @@ func (n *NumberExpression) Span() *Span {
 func (n *NumberExpression) Value() AValue {
   return n.value
 }
+
+func (n *NumberExpression) String() string {
+  return fmt.Sprintf("%s", n.value)
+}

@@ -5,9 +5,7 @@ import (
 	"reflect"
 )
 
-type ASlice interface {
-	Slice(max int) (result []AValue)
-}
+type ASlice []AValue
 
 type SliceExpression struct {
 	location  Span
@@ -68,13 +66,40 @@ func (se *SliceExpression) Type() Type {
 }
 
 func (se *SliceExpression) Value() AValue {
-	return se
+	return se.Slice(se.capacity.Value().Value().(int))
 }
 
-func (se *SliceExpression) Slice(max int) (result []AValue) {
+func (se *SliceExpression) Slice(max int) (result ASlice) {
   return se.datapoint.Target().Slice(max)
 }
 
 func (se *SliceExpression) Target() (*Reference) {
   return &se.datapoint
+}
+
+func (se *SliceExpression) String() string {
+  if se.isHead {
+    return fmt.Sprintf("%s[0:%s]", se.Target().String(), se.capacity.String())
+  }
+  return fmt.Sprintf("%s[-%s:]", se.Target().String(), se.capacity.String())
+}
+
+func (se *SliceExpression) Equals(o AValue) ABoolean {
+  return NewBooleanValue(se.Value() == o.Value())
+}
+
+func (se ASlice) Value() interface{} {
+  return []AValue(se)
+}
+
+func (se ASlice) Equals(o AValue) ABoolean {
+  return NewBooleanValue(se.Value() == o.Value())
+}
+
+func (se ASlice) String() string {
+  return fmt.Sprint(([]AValue(se)))
+}
+
+func (se ASlice) Type() Type {
+  return Type(reflect.Array)
 }

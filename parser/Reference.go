@@ -58,3 +58,7 @@ func (r *Reference) Value() AValue {
 func (r *Reference) Type() Type {
   return r.Target().Type()
 }
+
+func (r *Reference) String() string {
+  return r.Target().String()
+}

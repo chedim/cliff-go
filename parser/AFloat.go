@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"reflect"
 )
 
@@ -48,3 +49,14 @@ func (f Float) CompareTo(o AValue) Integer {
   return 0
 }
 
+func (f Float) String() string {
+  return fmt.Sprintf("%f", f)
+}
+
+func (f Float) Value() interface{} {
+  return float64(f)
+}
+
+func (f Float) Equals(o AValue) ABoolean {
+  return NewBooleanValue(f.Value() == o.Value())
+}

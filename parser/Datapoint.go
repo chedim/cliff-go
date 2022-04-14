@@ -133,3 +133,7 @@ func (d *Datapoint) Type() Type {
 func (d *Datapoint) Name() string {
   return d.name
 }
+
+func (d *Datapoint) String() string {
+  return d.name
+}

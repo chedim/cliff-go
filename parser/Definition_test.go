@@ -20,8 +20,8 @@ func TestReadDefinition(t *testing.T) {
   }
 
   condition := def.Condition()
-  if condition.Value() != Bool(true) {
-    t.Errorf("invalid condition value: %s", condition.Value())
+  if condition == nil || condition.Value() != Bool(true) {
+    t.Errorf("invalid condition value: %s", condition)
   }
 
   text = "30 when something other"
@@ -29,5 +29,15 @@ func TestReadDefinition(t *testing.T) {
   def, err = ReadDefinition(scanner)
   if err != nil {
     t.Errorf("unexpected parser error at %s", err)
+  }
+}
+
+func TestReversedDefinitions(t *testing.T) {
+  text := "when name is set: 2"
+  scanner := NewCliffScanner(strings.NewReader(text))
+  if def, err := ReadDefinition(scanner); err != nil {
+    t.Errorf("unexpected parser error at %s", err)
+  } else if def.Value().String() != "2" {
+    t.Errorf("Invalid definition value: %s", def.Value().String())
   }
 }

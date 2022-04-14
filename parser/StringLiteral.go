@@ -7,7 +7,7 @@ import (
 
 type StringLiteral struct {
 	location Span
-	value string
+	value String
 }
 
 var escapeCharacterMap = map[rune]rune{
@@ -59,7 +59,7 @@ func ReadString(scanner *Scanner, delim Token) (*StringLiteral, *ParserError) {
       }
     }
 
-    result.value += token.Literal
+    result.value += String(token.Literal)
 		scanner.Scan()
 	}
 
@@ -76,7 +76,11 @@ func (s *StringLiteral) Span() *Span {
   return &s.location
 }
 
-func (s *StringLiteral) Value() AValue {
-  var result AValue = String(s.value)
-  return result
+func (s *StringLiteral) String() string {
+  return string(s.value)
 }
+
+func (s *StringLiteral) Value() AValue {
+  return s.value
+}
+

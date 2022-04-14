@@ -54,3 +54,19 @@ func (b Bool) IsTrue() Bool {
 func (b Bool) Negate() Negatable {
   return !b
 }
+
+func (b Bool) Value() interface{} {
+  return bool(b)
+}
+
+func (b Bool) String() string {
+  if b {
+    return "TRUE"
+  } else {
+    return "FALSE"
+  }
+}
+
+func (b Bool) Equals(o AValue) ABoolean {
+  return NewBooleanValue(b.Value() == o.Value())
+}

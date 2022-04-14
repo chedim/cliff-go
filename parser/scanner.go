@@ -32,9 +32,10 @@ type Scanner struct {
   offset int
   line int
   column int
-  t *Tokenized
+  t *Stack
   debugBuffer string
   preserveCase bool
+  minOffset int
 }
 
 type Tokenized struct {
@@ -46,7 +47,7 @@ type Tokenized struct {
 }
 
 func NewCliffScanner(r io.Reader) *Scanner {
-  return &Scanner{r: bufio.NewReader(r)}
+  return &Scanner{r: bufio.NewReader(r), t: NewStack()}
 }
 
 func (s *Scanner) read() rune {
@@ -76,11 +77,10 @@ func (s *Scanner) peek() rune {
 }
 
 func (s *Scanner) Peek() *Tokenized {
-  if s.t != nil {
-    return s.t
+  if (s.t.Len() == 0) {
+    s.t.Push(s.Scan())
   }
-  s.t = s.Scan()
-  return s.t
+  return s.t.Peek().(*Tokenized)
 }
 
 var specialCharacters = map[rune]Token {
@@ -104,9 +104,8 @@ var specialCharacters = map[rune]Token {
 }
 
 func (s *Scanner) Scan() (result *Tokenized) {
-  if s.t != nil {
-    result = s.t
-    s.t = nil
+  if s.t.Len() > 0 {
+    result = s.t.Pop().(*Tokenized)
     return
   }
   ch := s.peek()
@@ -133,7 +132,19 @@ func (s *Scanner) Scan() (result *Tokenized) {
 }
 
 func (s *Scanner) scanWhitespace() (result *Tokenized) {
-  s.t = nil
+  if (s.t.Len() > 0) {
+    rc := s.t.Peek().(*Tokenized)
+    if (rc.Token == WS) {
+      result = s.t.Pop().(*Tokenized)
+      return
+    }
+    result = &Tokenized{
+      Token: WS,
+      Span: s.Position(),
+    }
+    return
+  }
+
   result = new(Tokenized)
   result.Token = WS
   result.Span = s.Position()
@@ -283,4 +294,12 @@ func (s *Scanner) PreserveCase(pc bool) (old bool) {
 
 func (s *Scanner) Error(msg string, args ...interface{}) (*ParserError) {
   return NewParserError(*s.Position(), fmt.Sprintf(msg, args...))
+}
+
+func (s *Scanner) GetMinOffset() int {
+  return s.minOffset
+}
+
+func (s *Scanner) SetMinOffset(minOffset int) {
+  s.minOffset = minOffset
 }

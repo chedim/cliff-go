@@ -3,6 +3,9 @@ package parser
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
+
+	"go.uber.org/zap"
 )
 
 type Statement struct {
@@ -14,6 +17,10 @@ type Statement struct {
   Labels []*Datapoint
   Definitions []*Definition
   SubStatements []*Statement
+}
+
+func ParseStatement(text string) (*Statement, *ParserError) {
+  return ReadStatement(NewCliffScanner(strings.NewReader(text)))
 }
 
 func ReadStatement(scanner *Scanner) (statement *Statement, err *ParserError){
@@ -50,7 +57,7 @@ func (statement *Statement) fillPluralStatement(scanner *Scanner) *ParserError {
   if token.Token == AT {
     return statement.readPositionExpression(scanner)
   } else if token.Token == COLON {
-    return statement.readAlternativeDefinitions(scanner)
+    return statement.readArrayDefinitions(scanner)
   } else if isExpressionToken(token.Token) {
     def, err := ReadDefinition(scanner)
     if err != nil {
@@ -75,7 +82,7 @@ func (statement *Statement) fillSingularStatement(scanner *Scanner) *ParserError
   if first.Token == AT {
     return statement.readPositionExpression(scanner)
   } else if first.Token == COLON {
-    return statement.readAlternativeDefinitions(scanner)
+    return statement.readArrayDefinitions(scanner)
   } else if first.Token == WHEN {
     def := &Definition{}
     cnd, err := ReadExpression(scanner)
@@ -96,8 +103,13 @@ func (statement *Statement) fillSingularStatement(scanner *Scanner) *ParserError
   return nil
 }
 
-func (statement *Statement) readAlternativeDefinitions(scanner *Scanner) *ParserError {
+func (statement *Statement) readArrayDefinitions(scanner *Scanner) *ParserError {
   ft := scanner.Peek()
+
+  logger, _ := zap.NewDevelopment()
+  l := logger.Sugar()
+  l.Debug(scanner.Position().String(), " | Reading alternative definitions")
+
   if ft.Token != COLON {
     return NewParserError(*scanner.Position(), "tried to read alternative definitions starting with token that is not COLON")
   }
@@ -110,17 +122,36 @@ func (statement *Statement) readAlternativeDefinitions(scanner *Scanner) *Parser
   }
   scanner.Scan()
 
-  for ft = scanner.Peek(); ft == nil || ft.Token == MINUS; ft = scanner.Peek() {
-    if ft == nil {
-      return NewParserError(*scanner.Position(), "ft is null")
+  parentWhitespace := scanner.GetMinOffset()
+  currentWhitespace := -1
+
+  for ft = scanner.scanWhitespace(); ft.Length >= scanner.GetMinOffset(); ft = scanner.scanWhitespace() {
+    if (currentWhitespace < 0) {
+      currentWhitespace = ft.Length
+      scanner.SetMinOffset(currentWhitespace)
+    } else if (ft.Length != currentWhitespace) {
+      return NewParserError(*scanner.Position(),
+        fmt.Sprintf("Alternative definition offset mismatch, was expecting whitespace length %d characters, but got %d", currentWhitespace, ft.Length))
     }
 
-    def, err := ReadDefinition(scanner)
-    if err != nil {
+    if def, err := ReadDefinition(scanner); err != nil {
       return err
+    } else {
+      l.Debug(scanner.Position().String(), "| Read Definition ->", def.String())
+      statement.Definitions = append(statement.Definitions, def)
     }
-    statement.Definitions = append(statement.Definitions, def)
+
+    if eol := scanner.Peek(); eol.Token == EOF {
+      break
+    } else if eol.Token != EOL {
+      return NewParserError(*scanner.Position(), "Expected EOL but got %s", eol.Token)
+    }
+
+    scanner.Scan()
   }
+
+  scanner.SetMinOffset(parentWhitespace)
+
   return nil
 }
 

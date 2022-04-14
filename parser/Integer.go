@@ -1,6 +1,9 @@
 package parser
 
-import "reflect"
+import (
+	"fmt"
+	"reflect"
+)
 
 type Integer int64
 
@@ -40,4 +43,16 @@ func (i Integer) CompareTo(o AValue) Integer {
     return -1
   }
   return 0
+}
+
+func (i Integer) String() string {
+  return fmt.Sprintf("%d", i)
+}
+
+func (i Integer) Value() interface{} {
+  return int64(i)
+}
+
+func (i Integer) Equals(o AValue) ABoolean {
+  return NewBooleanValue(i.Value() == o.Value())
 }
