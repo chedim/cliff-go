@@ -109,9 +109,3 @@ func (s *Stack) Peek() interface{} {
 func (s *Stack) Len() int {
   return s.len
 }
-
-func LogDebug(args...interface{}) {
-  logger, _ := zap.NewDevelopment()
-  l := logger.Sugar()
-  l.Debug(args...)
-}
