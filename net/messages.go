@@ -28,6 +28,9 @@ func ReadQueryMessage(message string) *QueryMessage {
   return nil
 }
 
+func (m *QueryMessage) Apply() {
+
+}
 
 type ValueMessage struct {
   QueryMessage
@@ -52,6 +55,39 @@ func ReadValueMessage(m string) *ValueMessage {
   if t, e := parser.ReadExpression(s); e != nil {
     return nil
   } else {
+    value := t.Value()
+    qm.value = &value
+  }
 
+  return &qm
+}
+
+type SubscribeMessage struct {
+  QueryMessage
+}
+
+func ReadSubscribeMessage(s string) *SubscribeMessage {
+  return &SubscribeMessage{
+    *ReadQueryMessage(s),
+  }
+}
+
+type UnsubscribeMessage struct {
+  QueryMessage
+}
+
+func ReadUnsubscribeMessage(m string) *UnsubscribeMessage {
+  return &UnsubscribeMessage{
+    *ReadQueryMessage(m),
+  }
+}
+
+type UnsetMessage struct {
+  QueryMessage
+}
+
+func ReadUnsetMessage(m string) *UnsetMessage {
+  return &UnsetMessage{
+    *ReadQueryMessage(m),
   }
 }
