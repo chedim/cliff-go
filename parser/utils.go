@@ -7,7 +7,6 @@ import (
 	"sync"
 
 	"github.com/gertd/go-pluralize"
-	"go.uber.org/zap"
 )
 
 var pc = pluralize.NewClient()

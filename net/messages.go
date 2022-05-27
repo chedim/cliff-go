@@ -1,14 +1,15 @@
 package net
 
 import (
+	"cliff/env"
 	"cliff/parser"
 	"encoding/json"
 	"strings"
 )
 
 type QueryMessage struct {
-	targetName *string
-  targetHash *[]byte
+	targetName string
+  targetHash string
 }
 
 func ReadQueryMessage(message string) *QueryMessage {
@@ -16,25 +17,29 @@ func ReadQueryMessage(message string) *QueryMessage {
     var target string
     if json.Unmarshal([]byte(message[1:]), &target) == nil {
       return &QueryMessage{
-        targetName: &target,
+        targetName: target,
       }
     }
 	} else if len(message) == 41 {
-    hash := []byte(message[1:])
     return &QueryMessage{
-      targetHash: &hash,
+      targetHash: message[1:],
     }
   }
   return nil
 }
 
-func (m *QueryMessage) Apply() {
-
+func (m *QueryMessage) Apply() *FFIResponse {
+  if m.targetHash != "" {
+    v := env.GetDatapoint(m.targetHash).Value()
+    return &v
+  } else {
+    return env.GetDatapointByName(m.targetName).Value()
+  }
 }
 
 type ValueMessage struct {
   QueryMessage
-  value *parser.AValue
+  value parser.AValue
 }
 
 func ReadValueMessage(m string) *ValueMessage {
@@ -45,10 +50,9 @@ func ReadValueMessage(m string) *ValueMessage {
     if json.Unmarshal([]byte(m[1:]), qm.targetName) != nil {
       return nil
     }
-    s = parser.NewCliffScanner(strings.NewReader(m[len(*qm.targetName):]))
+    s = parser.NewCliffScanner(strings.NewReader(m[len(qm.targetName):]))
   } else {
-    hash := []byte(m[1:41])
-    qm.targetHash = &hash
+    qm.targetHash = m[1:41]
     s = parser.NewCliffScanner(strings.NewReader(m[42:]))
   }
 
@@ -56,7 +60,7 @@ func ReadValueMessage(m string) *ValueMessage {
     return nil
   } else {
     value := t.Value()
-    qm.value = &value
+    qm.value = value
   }
 
   return &qm
@@ -76,8 +80,8 @@ type UnsubscribeMessage struct {
   QueryMessage
 }
 
-func ReadUnsubscribeMessage(m string) *UnsubscribeMessage {
-  return &UnsubscribeMessage{
+func ReadUnsubscribeMessage(m string) UnsubscribeMessage {
+  return UnsubscribeMessage{
     *ReadQueryMessage(m),
   }
 }

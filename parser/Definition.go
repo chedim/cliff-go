@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"cliff/core"
 	"fmt"
 )
 
@@ -15,10 +16,10 @@ func ReadDefinition(scanner *Scanner) (*Definition, *ParserError) {
 
   if tok := scanner.Peek(); !isExpressionToken(tok.Token) {
     if (tok.Token == WHEN) {
-      LogDebug("Detected early when")
+      core.LogDebug("Detected early when")
       result.readConditionSection(scanner)
     } else if (tok.Token == AFTER) {
-      LogDebug("Detected early after")
+      core.LogDebug("Detected early after")
       result.readConditionSection(scanner)
     } else {
       return nil, NewParserError(*scanner.Position(), fmt.Sprintf("tried to read definition starting from a token that is not an expression token: %s '%s'", tok.Token, tok.Literal))
@@ -59,7 +60,7 @@ func ReadDefinition(scanner *Scanner) (*Definition, *ParserError) {
 }
 
 func (d *Definition) readConditionSection(scanner *Scanner) *ParserError {
-  LogDebug("Reading condition section")
+  core.LogDebug("Reading condition section")
   if tok := scanner.Peek(); tok.Token != WHEN {
     return scanner.Error("Tried to read condition starting with a token that is not WHEN: %s", tok.Token)
   }

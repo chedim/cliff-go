@@ -43,22 +43,22 @@ func anyPlural(toks []*Tokenized) bool {
   return false
 }
 
-func (r *Reference) Span() *Span {
+func (r Reference) Span() *Span {
 	return r.span
 }
 
-func (r *Reference) Target() *Datapoint {
+func (r Reference) Target() Datapoint {
   return DatapointByName(r.names)
 }
 
-func (r *Reference) Value() AValue {
+func (r Reference) Value() AValue {
   return r.Target().Value()
 }
 
-func (r *Reference) Type() Type {
+func (r Reference) Type() Type {
   return r.Target().Type()
 }
 
-func (r *Reference) String() string {
+func (r Reference) String() string {
   return r.Target().String()
 }

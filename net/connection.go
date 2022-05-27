@@ -26,13 +26,16 @@ func listen(receive chan Packet) {
     panic(e)
   } else {
     defer connection.Close()
-    var message Packet
     for {
       inputBytes := make([]byte, 4096)
       length, _, _ := connection.ReadFromUDP(inputBytes)
+      message := Packet{
+        connection.RemoteAddr(),
+        string(inputBytes[:length]),
+      }
       buffer := bytes.NewBuffer(inputBytes[:length])
       decoder := gob.NewDecoder(buffer)
-      decoder.Decode(&message)
+      decoder.Decode(&message.Message)
 
       receive <- message
     }
@@ -47,13 +50,9 @@ func broadcast(send chan Packet) {
   } else {
     defer connection.Close()
 
-    var buffer bytes.Buffer
-    encoder := gob.NewEncoder(&buffer)
     for {
       message := <-send
-      encoder.Encode(message)
-      connection.Write(buffer.Bytes())
-      buffer.Reset()
+      connection.Write([]byte(message.Message))
     }
   }
 }
