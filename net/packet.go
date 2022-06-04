@@ -16,10 +16,12 @@ type ParsedPacket struct {
 }
 
 type FFIMessage interface {
-	Apply() *FFIResponse
+	Apply() FFIResponse
 }
 
-type FFIResponse interface{}
+type FFIResponse interface{
+  String() string
+}
 
 func ParsePackets(packets <-chan Packet) <-chan ParsedPacket {
 	out := make(chan ParsedPacket)

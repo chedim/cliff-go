@@ -28,10 +28,10 @@ func ReadQueryMessage(message string) *QueryMessage {
   return nil
 }
 
-func (m *QueryMessage) Apply() *FFIResponse {
+func (m QueryMessage) Apply() FFIResponse {
   if m.targetHash != "" {
     v := env.GetDatapoint(m.targetHash).Value()
-    return &v
+    return v
   } else {
     return env.GetDatapointByName(m.targetName).Value()
   }
