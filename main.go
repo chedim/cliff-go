@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cliff/net"
 	"cliff/parser"
 	"fmt"
 	"strings"
@@ -16,4 +17,7 @@ func main() {
   } else {
     fmt.Printf("Statement: %s\n", stt)
   }
+
+  server := net.Server()
+  server.Start()
 }

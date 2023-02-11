@@ -1,0 +1,278 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+A	parser/tokens.go	/^  A$/;"	c
+ABoolean	parser/ABoolean.go	/^type ABoolean interface {$/;"	t
+AN	parser/tokens.go	/^  AN$/;"	c
+AND	parser/tokens.go	/^  AND$/;"	c
+ANumber	parser/Number.go	/^type ANumber interface{$/;"	t
+ARE	parser/tokens.go	/^  ARE$/;"	c
+ASTERISK	parser/tokens.go	/^	ASTERISK  \/\/ *$/;"	c
+AT	parser/tokens.go	/^  AT$/;"	c
+AValue	parser/AValue.go	/^type AValue interface {$/;"	t
+Add	parser/AFloat.go	/^func (f Float) Add(o AValue) AValue {$/;"	f
+Add	parser/Integer.go	/^func (i Integer) Add(o AValue) AValue {$/;"	f
+AddAnalyzer	parser/TokenTree.go	/^func (tt *TokenTree) AddAnalyzer(a TokenAnalyzer, ts ...Token) (r *TokenTree) {$/;"	f
+Addable	parser/BinaryOperator.go	/^type Addable interface {$/;"	t
+AfterChange	parser/Datapoint.go	/^func (d *Datapoint) AfterChange(s *AfterChangeListener) {$/;"	f
+AfterChangeListener	parser/Datapoint.go	/^type AfterChangeListener func(dp *Datapoint)$/;"	t
+AnExpression	parser/Expression.go	/^type AnExpression interface {$/;"	t
+And	parser/ABoolean.go	/^func (b Bool) And(o Verifiable) Verifiable {$/;"	f
+Andable	parser/ABoolean.go	/^type Andable interface {$/;"	t
+Arguments	parser/BinaryOperator.go	/^func (o *BinaryOperatorExpression) Arguments() *[]AValue {$/;"	f
+BSLASH	parser/tokens.go	/^  BSLASH    \/\/ \\$/;"	c
+BeforeChange	parser/Datapoint.go	/^func (d *Datapoint) BeforeChange(s *BeforeChangeListener) {$/;"	f
+BeforeChangeListener	parser/Datapoint.go	/^type BeforeChangeListener func(dp *Datapoint, v AValue) RejectionReason$/;"	t
+BinaryExpression	parser/BinaryExpression.go	/^type BinaryExpression struct {$/;"	t
+BinaryOperator	parser/BinaryOperator.go	/^type BinaryOperator func(left AValue, right AValue) AValue$/;"	t
+BinaryOperatorExpression	parser/BinaryOperator.go	/^type BinaryOperatorExpression struct {$/;"	t
+Bool	parser/ABoolean.go	/^type Bool bool$/;"	t
+COLON	parser/tokens.go	/^	COLON     \/\/ :$/;"	c
+COMMA	parser/tokens.go	/^	COMMA     \/\/ ,$/;"	c
+Capacity	parser/Datapoint.go	/^func (d *Datapoint) Capacity() int {$/;"	f
+Child	parser/Datapoint.go	/^func (d *Datapoint) Child(name string) *Datapoint {$/;"	f
+Child	parser/TokenTree.go	/^func (tt *TokenTree) Child(t Token) *TokenTree {$/;"	f
+CliffModuleImpl	parser/CliffModule.go	/^type CliffModuleImpl struct {$/;"	t
+Collection	parser/Collection.go	/^type Collection []AValue$/;"	t
+Comparable	parser/BinaryOperator.go	/^type Comparable interface {$/;"	t
+CompareTo	parser/AFloat.go	/^func (f Float) CompareTo(o AValue) Integer {$/;"	f
+CompareTo	parser/Integer.go	/^func (i Integer) CompareTo(o AValue) Integer {$/;"	f
+Condition	parser/Definition.go	/^func (d *Definition) Condition() AnExpression {$/;"	f
+ConstExpression	parser/StaticExpression.go	/^type ConstExpression struct {$/;"	t
+DOT	parser/tokens.go	/^  DOT       \/\/ .$/;"	c
+DQUOTE	parser/tokens.go	/^  DQUOTE    \/\/ "$/;"	c
+Datapoint	parser/Datapoint.go	/^type Datapoint struct {$/;"	t
+DatapointByName	parser/Datapoint.go	/^func DatapointByName(name []string) (r *Datapoint) {$/;"	f
+Definition	parser/Definition.go	/^func (d *Definition) Definition() AnExpression {$/;"	f
+Definition	parser/Definition.go	/^type Definition struct {$/;"	t
+DeleteBeforeChange	parser/Datapoint.go	/^func (d *Datapoint) DeleteBeforeChange(s *BeforeChangeListener) {$/;"	f
+Dependencies	parser/Statement.go	/^func (s *Statement) Dependencies() []*Datapoint {$/;"	f
+Div	parser/AFloat.go	/^func (f Float) Div(o AValue) AValue {$/;"	f
+Div	parser/Integer.go	/^func (i Integer) Div(o AValue) AValue {$/;"	f
+Dividable	parser/BinaryOperator.go	/^type Dividable interface {$/;"	t
+EOF	parser/tokens.go	/^	EOF$/;"	c
+EOL	parser/tokens.go	/^	EOL$/;"	c
+EQL	parser/tokens.go	/^  EQL       \/\/ =$/;"	c
+EnsureCapacity	parser/Datapoint.go	/^func (d *Datapoint) EnsureCapacity(request int) {$/;"	f
+Error	parser/parsererror.go	/^func (pe *ParserError) Error() string {$/;"	f
+ExpressionJoiner	parser/Expression.go	/^type ExpressionJoiner func(l AnExpression, r AnExpression) AnExpression$/;"	t
+ExpressionReader	parser/Expression.go	/^type ExpressionReader func(scanner *Scanner, stack *Stack) *ParserError$/;"	t
+Extend	parser/span.go	/^func (s *Span) Extend(o *Span) *Span {$/;"	f
+ExtendParserError	parser/parsererror.go	/^func ExtendParserError(location Span, err error) *ParserError {$/;"	f
+FALSE	parser/tokens.go	/^  FALSE$/;"	c
+Float	parser/AFloat.go	/^func (f Float) Float() Float {$/;"	f
+Float	parser/AFloat.go	/^type Float float64$/;"	t
+Float	parser/Integer.go	/^func (i Integer) Float() Float {$/;"	f
+Folder	parser/SourceFile.go	/^func (me *SourceFile) Folder() *Package {$/;"	f
+GetAnalyzer	parser/TokenTree.go	/^func (tt *TokenTree) GetAnalyzer(ts []*Tokenized) TokenAnalyzer {$/;"	f
+ILLEGAL	parser/tokens.go	/^	ILLEGAL Token = iota$/;"	c
+IS	parser/tokens.go	/^	IS$/;"	c
+Integer	parser/Integer.go	/^func (i Integer) Integer() Integer {$/;"	f
+Integer	parser/Integer.go	/^type Integer int64$/;"	t
+IsTrue	parser/ABoolean.go	/^func (b Bool) IsTrue() Bool {$/;"	f
+Keywords	parser/scanner.go	/^var Keywords = map[string]Token{$/;"	v
+LBRA	parser/tokens.go	/^  LBRA      \/\/ [$/;"	c
+LCURL	parser/tokens.go	/^  LCURL     \/\/ {$/;"	c
+LPAREN	parser/tokens.go	/^  LPAREN    \/\/ ($/;"	c
+Location	parser/Package.go	/^func (p *Package) Location() string {$/;"	f
+Location	parser/SourceFile.go	/^func (me *SourceFile) Location() string {$/;"	f
+MINUS	parser/tokens.go	/^	MINUS     \/\/ -$/;"	c
+Mul	parser/AFloat.go	/^func (f Float) Mul(o AValue) AValue {$/;"	f
+Mul	parser/Integer.go	/^func (i Integer) Mul(o AValue) AValue {$/;"	f
+Multipliable	parser/BinaryOperator.go	/^type Multipliable interface {$/;"	t
+ND	parser/tokens.go	/^  ND$/;"	c
+NUMBER	parser/tokens.go	/^  NUMBER$/;"	c
+Name	parser/SourceFile.go	/^func (me *SourceFile) Name() string {$/;"	f
+Negatable	parser/ABoolean.go	/^type Negatable interface {$/;"	t
+Negate	parser/ABoolean.go	/^func (b Bool) Negate() Negatable {$/;"	f
+NewBinaryExpression	parser/BinaryExpression.go	/^func NewBinaryExpression(left AnExpression, right AnExpression, operator BinaryOperator) AnExpression {$/;"	f
+NewBinaryOperator	parser/BinaryOperator.go	/^func NewBinaryOperator(span Span, left AValue, right AValue, operator BinaryOperator) AnExpression {$/;"	f
+NewBooleanValue	parser/ABoolean.go	/^func NewBooleanValue(v bool) ABoolean {$/;"	f
+NewCliffScanner	parser/scanner.go	/^func NewCliffScanner(r io.Reader) *Scanner {$/;"	f
+NewConstExpression	parser/StaticExpression.go	/^func NewConstExpression(span *Span, value AValue) *ConstExpression {$/;"	f
+NewParserError	parser/parsererror.go	/^func NewParserError(location Span, message string) *ParserError {$/;"	f
+NewReference	parser/Reference.go	/^func NewReference(names ...string) *Reference {$/;"	f
+NewSourceFile	parser/SourceFile.go	/^func NewSourceFile(folder *Package, name string) (result *SourceFile, err error) {$/;"	f
+NewStack	parser/utils.go	/^func NewStack() *Stack {$/;"	f
+NormalizeTextArray	parser/utils.go	/^func NormalizeTextArray(t []string) []string {$/;"	f
+NormalizedText	parser/utils.go	/^func NormalizedText(t []*Tokenized) string {$/;"	f
+NormalizedTextArray	parser/utils.go	/^func NormalizedTextArray(t []*Tokenized) []string {$/;"	f
+NumberExpression	parser/Number.go	/^type NumberExpression struct {$/;"	t
+NumberLiteral	parser/Expression.go	/^type NumberLiteral struct {$/;"	t
+OF	parser/tokens.go	/^  OF$/;"	c
+OR	parser/tokens.go	/^  OR$/;"	c
+OTHER	parser/tokens.go	/^  OTHER$/;"	c
+Operator	parser/Operator.go	/^type Operator interface {$/;"	t
+Or	parser/ABoolean.go	/^func (b Bool) Or(o Verifiable) Verifiable {$/;"	f
+Orable	parser/ABoolean.go	/^type Orable interface {$/;"	t
+PLUS	parser/tokens.go	/^	PLUS      \/\/ +$/;"	c
+Package	parser/Package.go	/^type Package struct {$/;"	t
+ParserError	parser/parsererror.go	/^type ParserError struct {$/;"	t
+Path	parser/Datapoint.go	/^func (d *Datapoint) Path(path []string) (r *Datapoint) {$/;"	f
+Path	parser/TokenTree.go	/^func (tt *TokenTree) Path(ts []Token) (r *TokenTree) {$/;"	f
+Peek	parser/scanner.go	/^func (s *Scanner) Peek() (*Tokenized, error) {$/;"	f
+Peek	parser/utils.go	/^func (s *Stack) Peek() interface{} {$/;"	f
+Pop	parser/utils.go	/^func (s *Stack) Pop() interface{} {$/;"	f
+Position	parser/scanner.go	/^func (s *Scanner) Position() *Span {$/;"	f
+PreserveCase	parser/scanner.go	/^func (s *Scanner) PreserveCase(pc bool) (old bool) {$/;"	f
+Push	parser/utils.go	/^func (s *Stack) Push(x interface{}) {$/;"	f
+QUOTE	parser/tokens.go	/^  QUOTE     \/\/ '$/;"	c
+RBRA	parser/tokens.go	/^  RBRA      \/\/ ]$/;"	c
+RCURL	parser/tokens.go	/^  RCURL     \/\/ }$/;"	c
+RD	parser/tokens.go	/^  RD$/;"	c
+RPAREN	parser/tokens.go	/^  RPAREN    \/\/ )$/;"	c
+ReadDefinition	parser/Definition.go	/^func ReadDefinition(scanner *Scanner) (*Definition, *ParserError) {$/;"	f
+ReadExpression	parser/Expression.go	/^func ReadExpression(scanner *Scanner) (AnExpression, *ParserError) {$/;"	f
+ReadNumber	parser/Number.go	/^func ReadNumber(scanner *Scanner) (AnExpression, *ParserError) {$/;"	f
+ReadReference	parser/Reference.go	/^func ReadReference(scanner *Scanner) (*Reference, *ParserError) {$/;"	f
+ReadStatement	parser/Statement.go	/^func ReadStatement(scanner *Scanner) (statement *Statement, err *ParserError){$/;"	f
+ReadString	parser/StringLiteral.go	/^func ReadString(scanner *Scanner, delim Token) (*StringLiteral, *ParserError) {$/;"	f
+Reference	parser/Reference.go	/^type Reference struct {$/;"	t
+RejectionReason	parser/Datapoint.go	/^type RejectionReason *string$/;"	t
+SEMICOLON	parser/tokens.go	/^	SEMICOLON \/\/ ;$/;"	c
+SLASH	parser/tokens.go	/^  SLASH     \/\/ \/$/;"	c
+Scan	parser/scanner.go	/^func (s *Scanner) Scan() (result *Tokenized) {$/;"	f
+Scanner	parser/scanner.go	/^type Scanner struct {$/;"	t
+Set	parser/Datapoint.go	/^func (d *Datapoint) Set(v AValue) RejectionReason {$/;"	f
+SimpleStatement	parser/SimpleStatement.go	/^type SimpleStatement struct {$/;"	t
+Slice	parser/Datapoint.go	/^func (d *Datapoint) Slice(max int) (result []AValue) {$/;"	f
+SourceFile	parser/SourceFile.go	/^type SourceFile struct {$/;"	t
+Span	parser/BinaryExpression.go	/^func (b *BinaryExpression) Span() *Span {$/;"	f
+Span	parser/BinaryOperator.go	/^func (o *BinaryOperatorExpression) Span() *Span {$/;"	f
+Span	parser/Definition.go	/^func (d *Definition) Span() *Span {$/;"	f
+Span	parser/Number.go	/^func (n *NumberExpression) Span() *Span {$/;"	f
+Span	parser/Reference.go	/^func (r *Reference) Span() *Span {$/;"	f
+Span	parser/StaticExpression.go	/^func (s *ConstExpression) Span() *Span {$/;"	f
+Span	parser/StringLiteral.go	/^func (s *StringLiteral) Span() *Span {$/;"	f
+Span	parser/span.go	/^type Span struct {$/;"	t
+Stack	parser/utils.go	/^type Stack struct {$/;"	t
+Statement	parser/Statement.go	/^type Statement struct {$/;"	t
+Statements	parser/SourceFile.go	/^func (me *SourceFile) Statements() *[]*Statement {$/;"	f
+String	parser/String.go	/^type String string$/;"	t
+String	parser/span.go	/^func (s *Span) String() string {$/;"	f
+String	parser/token_string.go	/^func (i Token) String() string {$/;"	f
+StringLiteral	parser/StringLiteral.go	/^type StringLiteral struct {$/;"	t
+Sub	parser/AFloat.go	/^func (f Float) Sub(o AValue) AValue {$/;"	f
+Sub	parser/Integer.go	/^func (i Integer) Sub(o AValue) AValue {$/;"	f
+SubStatement	parser/SubStatement.go	/^type SubStatement struct {$/;"	t
+Subtractable	parser/BinaryOperator.go	/^type Subtractable interface {$/;"	t
+TH	parser/tokens.go	/^  TH$/;"	c
+THEN	parser/tokens.go	/^  THEN$/;"	c
+TRUE	parser/tokens.go	/^  TRUE$/;"	c
+Target	parser/Reference.go	/^func (r *Reference) Target() *Datapoint {$/;"	f
+Target	parser/Statement.go	/^func (s *Statement) Target() AnExpression {$/;"	f
+TestHelloWorld	parser/scanner_test.go	/^func TestHelloWorld(t *testing.T) {$/;"	f
+TestIsLetter	parser/scanner_test.go	/^func TestIsLetter(t *testing.T) {$/;"	f
+TestIsNumber	parser/scanner_test.go	/^func TestIsNumber(t *testing.T) {$/;"	f
+TestIsWhitespace	parser/scanner_test.go	/^func TestIsWhitespace(t *testing.T) {$/;"	f
+TestReadDefinition	parser/Definition_test.go	/^func TestReadDefinition(t *testing.T) {$/;"	f
+TestReadStatement	parser/Statement_test.go	/^func TestReadStatement(t *testing.T) {$/;"	f
+TestReadString	parser/StringLiteral_test.go	/^func TestReadString(t *testing.T) {$/;"	f
+TestSubExpression	parser/Expression_test.go	/^func TestSubExpression(t *testing.T) {$/;"	f
+TestSumExpression	parser/Expression_test.go	/^func TestSumExpression(t *testing.T) {$/;"	f
+Text	parser/utils.go	/^func Text(t []*Tokenized) string {$/;"	f
+TextArray	parser/utils.go	/^func TextArray(t []*Tokenized) []string {$/;"	f
+Token	parser/tokens.go	/^type Token int$/;"	t
+TokenAnalyzer	parser/TokenTree.go	/^type TokenAnalyzer func (f *SourceFile, s *Scanner) interface{}$/;"	t
+TokenTree	parser/TokenTree.go	/^type TokenTree struct {$/;"	t
+Tokenized	parser/scanner.go	/^type Tokenized struct {$/;"	t
+Type	parser/ABoolean.go	/^func (b Bool) Type() Type {$/;"	f
+Type	parser/AFloat.go	/^func (f Float) Type() Type {$/;"	f
+Type	parser/AValue.go	/^func (t Type) Type() Type {$/;"	f
+Type	parser/AValue.go	/^type Type reflect.Kind$/;"	t
+Type	parser/Collection.go	/^func (c Collection) Type() Type {$/;"	f
+Type	parser/Datapoint.go	/^func (d *Datapoint) Type() Type {$/;"	f
+Type	parser/Integer.go	/^func (i Integer) Type() Type {$/;"	f
+Type	parser/Number.go	/^func (n *NumberExpression) Type() Type {$/;"	f
+Type	parser/Reference.go	/^func (r *Reference) Type() Type {$/;"	f
+Type	parser/String.go	/^func (s String) Type() Type {$/;"	f
+Value	parser/BinaryExpression.go	/^func (b *BinaryExpression) Value() AValue {$/;"	f
+Value	parser/BinaryOperator.go	/^func (o *BinaryOperatorExpression) Value() AValue {$/;"	f
+Value	parser/Datapoint.go	/^func (d *Datapoint) Value() AValue {$/;"	f
+Value	parser/Definition.go	/^func (d *Definition) Value() AValue {$/;"	f
+Value	parser/Number.go	/^func (n *NumberExpression) Value() AValue {$/;"	f
+Value	parser/Reference.go	/^func (r *Reference) Value() AValue {$/;"	f
+Value	parser/StaticExpression.go	/^func (s *ConstExpression) Value() AValue {$/;"	f
+Value	parser/StringLiteral.go	/^func (s *StringLiteral) Value() AValue {$/;"	f
+Verifiable	parser/ABoolean.go	/^type Verifiable interface {$/;"	t
+WHEN	parser/tokens.go	/^	WHEN$/;"	c
+WORD	parser/tokens.go	/^	WORD$/;"	c
+WS	parser/tokens.go	/^	WS$/;"	c
+WrapParserError	parser/parsererror.go	/^func WrapParserError(err *ParserError, message string) *ParserError {$/;"	f
+_	parser/token_string.go	/^func _() {$/;"	f
+_Token_index	parser/token_string.go	/^var _Token_index = [...]uint8{0, 7, 10, 13, 15, 19, 25, 33, 38, 43, 52, 56, 61, 64, 69, 75, 79, 83, 89, 95, 100, 105, 110, 116, 119, 124, 125, 127, 130, 132, 134, 138, 141, 143, 145, 149, 153, 158, 160, 162, 164}$/;"	v
+_Token_name	parser/token_string.go	/^const _Token_name = "ILLEGALEOFEOLWSWORDNUMBERASTERISKCOMMACOLONSEMICOLONPLUSMINUSDOTQUOTEDQUOTELBRARBRALPARENRPARENLCURLRCURLSLASHBSLASHEQLOTHERAANAREATISWHENANDOROFTHENTRUEFALSENDRDTH"$/;"	c
+add	parser/Expression.go	/^func add(l AValue, r AValue) AValue {$/;"	f
+binaryOperator	parser/Expression.go	/^func binaryOperator(op BinaryOperator) ExpressionReader {$/;"	f
+detectKeyword	parser/scanner.go	/^func detectKeyword(in *Tokenized) *Tokenized {$/;"	f
+div	parser/Expression.go	/^func div(l AValue, r AValue) AValue {$/;"	f
+eof	parser/scanner.go	/^var eof = rune(0)$/;"	v
+escapeCharacterMap	parser/StringLiteral.go	/^var escapeCharacterMap = map[rune]rune{$/;"	v
+falseExpression	parser/Expression.go	/^func falseExpression(scanner *Scanner, stack *Stack) *ParserError {$/;"	f
+fillSingularStatement	parser/Statement.go	/^func (statement *Statement) fillSingularStatement(scanner *Scanner) *ParserError {$/;"	f
+init	parser/Expression.go	/^func init() {$/;"	f
+isLetter	parser/scanner.go	/^func isLetter(ch rune) bool {$/;"	f
+isNumber	parser/scanner.go	/^func isNumber(ch rune) bool {$/;"	f
+isWhitespace	parser/scanner.go	/^func isWhitespace(ch rune) bool {$/;"	f
+mul	parser/Expression.go	/^func mul(l AValue, r AValue) AValue {$/;"	f
+parser	parser/ABoolean.go	/^package parser$/;"	p
+parser	parser/AFloat.go	/^package parser$/;"	p
+parser	parser/AValue.go	/^package parser;$/;"	p
+parser	parser/BinaryExpression.go	/^package parser;$/;"	p
+parser	parser/BinaryOperator.go	/^package parser;$/;"	p
+parser	parser/CliffModule.go	/^package parser;$/;"	p
+parser	parser/Collection.go	/^package parser$/;"	p
+parser	parser/Datapoint.go	/^package parser$/;"	p
+parser	parser/Definition.go	/^package parser;$/;"	p
+parser	parser/Definition_test.go	/^package parser$/;"	p
+parser	parser/Expression.go	/^package parser$/;"	p
+parser	parser/Expression_test.go	/^package parser$/;"	p
+parser	parser/Integer.go	/^package parser$/;"	p
+parser	parser/Number.go	/^package parser$/;"	p
+parser	parser/Operator.go	/^package parser;$/;"	p
+parser	parser/Package.go	/^package parser;$/;"	p
+parser	parser/Reference.go	/^package parser$/;"	p
+parser	parser/SimpleStatement.go	/^package parser;$/;"	p
+parser	parser/SourceFile.go	/^package parser$/;"	p
+parser	parser/Statement.go	/^package parser$/;"	p
+parser	parser/Statement_test.go	/^package parser$/;"	p
+parser	parser/StaticExpression.go	/^package parser;$/;"	p
+parser	parser/String.go	/^package parser$/;"	p
+parser	parser/StringLiteral.go	/^package parser$/;"	p
+parser	parser/StringLiteral_test.go	/^package parser$/;"	p
+parser	parser/SubStatement.go	/^package parser;$/;"	p
+parser	parser/TokenTree.go	/^package parser;$/;"	p
+parser	parser/parsererror.go	/^package parser$/;"	p
+parser	parser/scanner.go	/^package parser$/;"	p
+parser	parser/scanner_test.go	/^package parser$/;"	p
+parser	parser/span.go	/^package parser$/;"	p
+parser	parser/token_string.go	/^package parser$/;"	p
+parser	parser/tokens.go	/^package parser;$/;"	p
+parser	parser/utils.go	/^package parser$/;"	p
+pc	parser/utils.go	/^var pc = pluralize.NewClient()$/;"	v
+peek	parser/scanner.go	/^func (s *Scanner) peek() rune {$/;"	f
+plc	parser/scanner.go	/^var plc = pluralize.NewClient()$/;"	v
+read	parser/scanner.go	/^func (s *Scanner) read() rune {$/;"	f
+readAlternativeDefinitions	parser/Statement.go	/^func (statement *Statement) readAlternativeDefinitions(scanner *Scanner) *ParserError {$/;"	f
+readCompoundStatements	parser/Statement.go	/^func (statement *Statement) readCompoundStatements(scanner *Scanner) *ParserError {$/;"	f
+readDoubleQuotedString	parser/Expression.go	/^func readDoubleQuotedString(scanner *Scanner, s *Stack) *ParserError {$/;"	f
+readNumber	parser/Expression.go	/^func readNumber(scanner *Scanner, s *Stack) *ParserError {$/;"	f
+readPositionExpression	parser/Statement.go	/^func (statement *Statement) readPositionExpression(scanner *Scanner) *ParserError {$/;"	f
+readReference	parser/Expression.go	/^func readReference(scanner *Scanner, s *Stack) *ParserError {$/;"	f
+readSingleQuotedString	parser/Expression.go	/^func readSingleQuotedString(scanner *Scanner, s *Stack) *ParserError {$/;"	f
+readSubStatement	parser/Statement.go	/^func (s *Statement) readSubStatement(scanner *Scanner) *ParserError {$/;"	f
+root	parser/Datapoint.go	/^var root = &Datapoint{$/;"	v
+scanKeywords	parser/scanner.go	/^func (s *Scanner) scanKeywords() (toks []*Tokenized) {$/;"	f
+scanNumber	parser/scanner.go	/^func (s *Scanner) scanNumber() (result *Tokenized) {$/;"	f
+scanOffset	parser/scanner.go	/^func (s *Scanner) scanOffset(size int) (bool, *ParserError) {$/;"	f
+scanWhitespace	parser/scanner.go	/^func (s *Scanner) scanWhitespace() (result *Tokenized) {$/;"	f
+scanWord	parser/scanner.go	/^func (s *Scanner) scanWord() (result *Tokenized) {$/;"	f
+scanWords	parser/scanner.go	/^func (s *Scanner) scanWords() (toks []*Tokenized) {$/;"	f
+skipToken	parser/Expression.go	/^func skipToken(scanner *Scanner, stack *Stack) *ParserError {$/;"	f
+specialCharacters	parser/scanner.go	/^var specialCharacters = map[rune]Token {$/;"	v
+sub	parser/Expression.go	/^func sub(l AValue, r AValue) AValue {$/;"	f
+trueExpression	parser/Expression.go	/^func trueExpression(scanner *Scanner, stack *Stack) *ParserError {$/;"	f
+valueHandlers	parser/Expression.go	/^var valueHandlers map[Token]ExpressionReader$/;"	v
